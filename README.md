@@ -9,7 +9,7 @@ It is part of the microfrotends architecture that is explained at https://github
 1. Clone this repository.
 2. `mvn clean install`
 3. Copy `omod/target/spa-1.0.0-SNAPSHOT.jar` to the `~/.OpenMRS/modules` directory. On mac/linux, this is `cp omod/target/spa-1.0.0-SNAPSHOT.omod ~/.OpenMRS/modules`
-4. Add the following to [the web.xml file in openmrs-core](https://github.com/openmrs/openmrs-core/blob/master/webapp/src/main/webapp/WEB-INF/web.xml)
+4. Add the following to [the web.xml file in openmrs-core](https://github.com/openmrs/openmrs-core/blob/master/webapp/src/main/webapp/WEB-INF/web.xml).
    This step is one we need to get rid of or work around. My hope is that we can get openmrs-core to respect the
    [web-fragment.xml](/omod/src/main/resources/META-INF/web-fragment.xml) file in this repository, but I have not succeeded
    in doing so yet, so we've got this manual step.
