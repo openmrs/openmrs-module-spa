@@ -56,3 +56,6 @@ local.properties
 
 .DS_Store
 target
+
+api/.classpath
+api/.project
