@@ -24,35 +24,4 @@
   		    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <context:component-scan base-package="org.openmrs.module.spa" />
-
-    <!-- Wraps FrontendSPAService methods in DB transactions and OpenMRS interceptors,
-    which set audit info like dateCreated, changedBy, etc.-->
-    <bean id="spa.FrontendSPAService"
-            class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager">
-            <ref bean="transactionManager" />
-        </property>
-        <property name="target">
-            <bean class="org.openmrs.module.spa.api.impl.FrontendSPAServiceImpl">
-                <property name="dao" ref="spa.FrontendSPADao" />
-            </bean>
-        </property>
-        <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
-        </property>
-    </bean>
-
-    <!-- Adds FrontendSPAService to OpenMRS context so it can be accessed
-    calling Context.getService(FrontendSPAService.class) -->
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list>
-                <value>org.openmrs.module.spa.api.FrontendSPAService</value>
-                <ref bean="spa.FrontendSPAService" />
-            </list>
-        </property>
-    </bean>
 </beans>

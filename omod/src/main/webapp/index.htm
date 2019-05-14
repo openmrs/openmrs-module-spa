@@ -1,12 +1,39 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>OpenMRS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
-  The beginnings of an SPA
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Your application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="importmap-type" content="systemjs-importmap">
+    <script type="systemjs-importmap">
+      {
+        "imports": {
+          "single-spa": "https://unpkg.com/single-spa@4.3.3/lib/system/single-spa.min.js",
+          "@openmrs/devtools-ui": "http://localhost:8081/devtools-ui.js"
+        }
+      }
+    </script>
+    <!-- Start downloading some of the common dependencies before SystemJS even asks for them (Perf boost) -->
+    <link rel="preload" href="https://unpkg.com/single-spa@4.3.3/lib/system/single-spa.min.js" as="script" crossorigin="anonymous" />
+
+    <script src="https://unpkg.com/import-map-overrides@1.5.0/dist/import-map-overrides.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/system.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/extras/amd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/extras/named-exports.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/extras/named-register.min.js"></script>
+  </head>
+  <body>
+    <script>
+      System.import('single-spa').then(function (singleSpa) {
+        singleSpa.registerApplication(
+          '@openmrs/devtools-ui',
+          () => System.import('@openmrs/devtools-ui'),
+          () => localStorage.getItem('openmrs:devmode') === 'true'
+        );
+
+        singleSpa.start();
+      })
+    </script>
+  </body>
 </html>
