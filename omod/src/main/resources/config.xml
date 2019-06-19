@@ -20,6 +20,12 @@
         <defaultValue>/spa</defaultValue>
         <description>The base URL from where Single Page Applications are served</description>
     </globalProperty>
+
+    <globalProperty>
+        <property>spa.frontend.directory</property>
+        <defaultValue>frontend</defaultValue>
+        <description>The directory that holds static files for the single-spa</description>
+    </globalProperty>
     
 	<servlet>
         <servlet-name>spaServlet</servlet-name>
