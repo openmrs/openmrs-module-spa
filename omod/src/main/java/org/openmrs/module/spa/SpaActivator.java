@@ -14,7 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
-import org.openmrs.module.ModuleConstants;
 import org.openmrs.module.ModuleException;
 import org.openmrs.util.OpenmrsUtil;
 
