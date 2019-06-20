@@ -13,8 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.Module;
-import org.openmrs.module.ModuleUtil;
+import org.openmrs.module.spa.utils.SpaModuleUtils;
 import org.openmrs.util.OpenmrsUtil;
 
 import javax.servlet.ServletException;
@@ -26,9 +25,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class SpaResourcesServlet extends HttpServlet {
-
-	private final String FRONTENT_DIRECTORY = "frontend";
-	private final String SINGLE_SPA_STATIC_FILES_DIR = "spa.frontend.directory";
 
 	private static final long serialVersionUID = 1239820102030344L;
 
@@ -52,7 +48,7 @@ public class SpaResourcesServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		log.debug("In service method for module servlet: " + request.getPathInfo());
+		log.debug("In service method for spa module frontend resource servlet: " + request.getPathInfo());
 		
 		File f = getFile(request);
 		if (f == null) {
@@ -82,16 +78,16 @@ public class SpaResourcesServlet extends HttpServlet {
 	 */
 	protected File getFile(HttpServletRequest request) {
 		
-		String path = request.getPathInfo();
+		String path = request.getPathInfo(); // all url will have a base of /spa/spaModuleResources/
 
-		log.info("Testing script path: " + path);
-		System.out.println("Testing script path: " + path);
+		// we want to extract everything after /spa/spaModuleResources/ from the path info. This should cater for sub-directories
+		String extractedFile = path.substring( path.indexOf('/', 20)+1, path.length() );
 
-		// ----------------------------------------------------------
+
 
 		AdministrationService as = Context.getAdministrationService();
-		String folderName = as.getGlobalProperty(SINGLE_SPA_STATIC_FILES_DIR,
-				FRONTENT_DIRECTORY);
+		String folderName = as.getGlobalProperty(SpaModuleUtils.GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR,
+				SpaModuleUtils.DEFAULT_FRONTEND_DIRECTORY);
 
 		// try to load the repository folder straight away.
 		File folder = new File(folderName);
@@ -102,26 +98,10 @@ public class SpaResourcesServlet extends HttpServlet {
 			folder = new File(OpenmrsUtil.getApplicationDataDirectory(), folderName);
 		}
 
-
-		log.info("Testing folder path: " + folder);
-		System.out.println("Testing folder path: " + folder);
-
-		// ----------------------------------------------------------
-
-
-		String realPath = getServletContext().getRealPath("") + OpenmrsUtil.getApplicationDataDirectory() + "/" + FRONTENT_DIRECTORY;
-
-		log.info("real path: " + realPath);
-		System.out.println("real path: " + realPath);
-
-		/*//if in dev mode, load resources from the development directory
-		File devDir = ModuleUtil.getDevelopmentDirectory(module.getModuleId());
-		if (devDir != null) {
-			realPath = devDir.getAbsolutePath() + "/omod/target/classes/web/module/resources" + relativePath;
-		}*/
-		
+		String realPath = folder.getPath();
+		realPath+="/" + extractedFile;
 		realPath = realPath.replace("/", File.separator);
-		
+
 		File f = new File(realPath);
 		if (!f.exists()) {
 			log.warn("No file with path '" + realPath + "' exists");
