@@ -62,7 +62,8 @@ public class SpaActivator extends BaseModuleActivator {
 			folder.mkdirs();
 		}
 
-		if (!folder.isDirectory())
+		if (!folder.isDirectory()) {
 			throw new ModuleException("SPA frontend repository is not a directory at: " + folder.getAbsolutePath());
+		}
 	}
 }
