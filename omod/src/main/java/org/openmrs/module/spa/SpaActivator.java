@@ -15,6 +15,7 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.ModuleException;
+import org.openmrs.module.spa.utils.SpaModuleUtils;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
@@ -22,13 +23,11 @@ import java.io.File;
 public class SpaActivator extends BaseModuleActivator {
 
 	private final Log log = LogFactory.getLog(getClass());
-	private final String FRONTENT_DIRECTORY = "frontend";
-	private final String SINGLE_SPA_STATIC_FILES_DIR = "spa.frontend.directory";
 	
 	@Override
 	public void started() {
 
-		createFrontendDirectoryInAppDirectory();
+		createFrontendDirectory();
 		log.info("SPA module started");
 	}
 
@@ -37,11 +36,16 @@ public class SpaActivator extends BaseModuleActivator {
 		log.info("SPA module stopped");
 	}
 
-	public void createFrontendDirectoryInAppDirectory() {
+	/**
+	 * Creates a directory to hold static files for the frontend.
+	 * The name/path of the directory is managed through a global property.
+	 * Implementations can change the directory name/path
+	 */
+	public void createFrontendDirectory() {
 
 		AdministrationService as = Context.getAdministrationService();
-		String folderName = as.getGlobalProperty(SINGLE_SPA_STATIC_FILES_DIR,
-				FRONTENT_DIRECTORY);
+		String folderName = as.getGlobalProperty(SpaModuleUtils.GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR,
+				SpaModuleUtils.DEFAULT_FRONTEND_DIRECTORY);
 
 		// try to load the repository folder straight away.
 		File folder = new File(folderName);
@@ -60,7 +64,5 @@ public class SpaActivator extends BaseModuleActivator {
 
 		if (!folder.isDirectory())
 			throw new ModuleException("SPA frontend repository is not a directory at: " + folder.getAbsolutePath());
-
-		//return folder;
 	}
 }
