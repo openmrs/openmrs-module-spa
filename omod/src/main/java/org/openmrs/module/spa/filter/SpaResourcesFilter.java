@@ -25,6 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+/**
+ * This is a filter class that handles all requests for the frontend static resources
+ * All requests with /frontend are handled by the class
+ */
 public class SpaResourcesFilter implements Filter {
 
 	private Log log = LogFactory.getLog(this.getClass());
