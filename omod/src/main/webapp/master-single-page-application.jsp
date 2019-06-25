@@ -6,7 +6,7 @@
     <title>OpenMRS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="importmap-type" content="systemjs-importmap">
-    <link rel="preload" href="${cookie['import-map-override-url'] == null ? '/import-map.json' : cookie['import-map-override-url'].getValue()}" as="script" crossorigin="anonymous" />
+    <link rel="preload" href="${cookie['import-map-override-url'] == null ? '/import-map.json' : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
     <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? '/import-map.json' : cookie['import-map-override-url'].getValue()}"></script>
     <script src="https://unpkg.com/import-map-overrides@1.5.0/dist/import-map-overrides.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/system.min.js"></script>
