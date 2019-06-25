@@ -37,9 +37,11 @@ public class SpaActivator extends BaseModuleActivator {
 	}
 
 	/**
-	 * Creates a directory to hold static files for the frontend.
-	 * The name/path of the directory is managed through a global property.
-	 * Implementations can change the directory name/path
+	 * Creates a directory to hold static files for the frontend if none exists.
+	 * The default directory name is stored in a global property and can be edited.
+	 * By default, the directory is created in the OpenMRS app directory
+	 * If the default value is edited, and a full path provided, the directory is created as per user specification
+	 *
 	 */
 	public void createFrontendDirectory() {
 
