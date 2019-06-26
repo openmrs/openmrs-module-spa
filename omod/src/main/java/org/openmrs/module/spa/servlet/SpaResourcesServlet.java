@@ -83,10 +83,10 @@ public class SpaResourcesServlet extends HttpServlet {
 	protected File getFile(HttpServletRequest request) {
 		
 		String path = request.getPathInfo(); // all url will have a base of /spa/spaModuleResources/
+		String baseUrl = "/spa/spaModuleResources";
 
 		// we want to extract everything after /spa/spaModuleResources/ from the path info. This should cater for sub-directories
-		//TODO: get a better approach to extracting the path to the requested resource
-		String extractedFile = path.substring( path.indexOf('/', 20)+1, path.length() );
+		String extractedFile = path.substring( path.indexOf('/', baseUrl.length()-1)+1, path.length() );
 
 
 		AdministrationService as = Context.getAdministrationService();
