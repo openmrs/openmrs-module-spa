@@ -82,10 +82,10 @@ public class SpaResourcesServlet extends HttpServlet {
 	 */
 	protected File getFile(HttpServletRequest request) {
 		
-		String path = request.getPathInfo(); // all url will have a base of /spa/spaModuleResources/
-		String baseUrl = "/spa/spaModuleResources";
+		String path = request.getPathInfo(); // all url will have a base of /spa/spaResources/
+		String baseUrl = "/spa/spaResources";
 
-		// we want to extract everything after /spa/spaModuleResources/ from the path info. This should cater for sub-directories
+		// we want to extract everything after /spa/spaResources/ from the path info. This should cater for sub-directories
 		String extractedFile = path.substring( path.indexOf('/', baseUrl.length()-1)+1, path.length() );
 		File folder = SpaModuleUtils.getSpaStaticFilesDir();
 

@@ -52,7 +52,7 @@ public class SpaResourcesFilter implements Filter {
 		}
 
 		if (requestURL.startsWith(spaResourceBasePath)) {
-			String newURL = requestURL.replaceFirst(Pattern.quote(spaResourceBasePath), "/ms/spa/spaModuleResources");
+			String newURL = requestURL.replaceFirst(Pattern.quote(spaResourceBasePath), "/ms/spa/spaResources");
 			req.getRequestDispatcher(newURL).forward(req, res);
 		} else {
 			chain.doFilter(req, res);
