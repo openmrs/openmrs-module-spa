@@ -87,23 +87,10 @@ public class SpaResourcesServlet extends HttpServlet {
 
 		// we want to extract everything after /spa/spaModuleResources/ from the path info. This should cater for sub-directories
 		String extractedFile = path.substring( path.indexOf('/', baseUrl.length()-1)+1, path.length() );
-
-
-		AdministrationService as = Context.getAdministrationService();
-		String folderName = as.getGlobalProperty(SpaModuleUtils.GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR,
-				SpaModuleUtils.DEFAULT_FRONTEND_DIRECTORY);
-
-		// try to load the repository folder straight away.
-		File folder = new File(folderName);
-
-		// if the property wasn't a full path already, assume it was intended to be a folder in the
-		// application directory
-		if (!folder.exists()) {
-			folder = new File(OpenmrsUtil.getApplicationDataDirectory(), folderName);
-		}
+		File folder = SpaModuleUtils.getSpaStaticFilesDir();
 
 		String realPath = folder.getPath();
-		realPath+="/" + extractedFile;
+		realPath += "/" + extractedFile;
 		realPath = realPath.replace("/", File.separator);
 
 		File f = new File(realPath);
