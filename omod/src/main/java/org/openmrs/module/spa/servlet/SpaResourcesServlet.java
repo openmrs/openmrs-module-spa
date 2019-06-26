@@ -25,7 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * This is a servlet class that handles all requests for the frontend static resources
+ * A servlet that handles requests for the frontend static resources
  * All requests with /frontend are handled by the class
  */
 public class SpaResourcesServlet extends HttpServlet {
