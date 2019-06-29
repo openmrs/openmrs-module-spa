@@ -8,7 +8,7 @@
     <meta name="importmap-type" content="systemjs-importmap">
     <link rel="preload" href="${cookie['import-map-override-url'] == null ? '/import-map.json' : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
     <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? '/import-map.json' : cookie['import-map-override-url'].getValue()}"></script>
-    <script src="https://unpkg.com/import-map-overrides@1.5.0/dist/import-map-overrides.js"></script>
+    <script src="https://unpkg.com/import-map-overrides@1.6.0/dist/import-map-overrides.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/system.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/extras/amd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/extras/named-exports.js"></script>
