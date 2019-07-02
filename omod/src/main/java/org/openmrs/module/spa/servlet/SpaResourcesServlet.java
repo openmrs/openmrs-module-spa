@@ -30,7 +30,7 @@ import java.io.IOException;
  */
 public class SpaResourcesServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1239820102030500L;
+	private static final long serialVersionUID = 1L;
 
 	private Log log = LogFactory.getLog(this.getClass());
 
