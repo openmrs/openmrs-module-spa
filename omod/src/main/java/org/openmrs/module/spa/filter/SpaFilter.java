@@ -23,11 +23,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 
+import static org.openmrs.module.util.SingleSpaConstants.DEFAULT_SPA_BASE_URL;
+import static org.openmrs.module.util.SingleSpaConstants.GP_KEY_SPA_BASE_URL;
+
 public class SpaFilter implements Filter {
-	
-	public static final String DEFAULT_SPA_BASE_URL = "/spa";
-	
-	public static final String GP_KEY_SPA_BASE_URL = "spa.baseUrl";
 
 	
 	@Override

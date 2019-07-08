@@ -1,0 +1,9 @@
+.idea/
+omod/target/
+api/target
+api/bin/
+*.iml
+
+.project
+omod/bin/
+.vscode/
