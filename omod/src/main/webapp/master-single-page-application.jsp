@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OpenMRS</title>
+    <base href="${requestScope.openmrsBaseUrlContext}${requestScope.spaBaseUrlContext}${'/'}" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="importmap-type" content="systemjs-importmap">
     <link rel="preload" href="${cookie['import-map-override-url'] == null ? '/import-map.json' : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
@@ -14,7 +15,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/extras/named-exports.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/extras/named-register.min.js"></script>
     <script>
-      System.import("@openmrs/root-config")
+      window.openmrsBase= "${requestScope.openmrsBaseUrlContext}";
+      window.spaBase =  "${requestScope.spaBaseUrlContext}";
+      window.getOpenmrsSpaBase = function() { return window.openmrsBase + window.spaBase + '/';};
+      System.import("@openmrs/root-config");
     </script>
   </head>
   <body>
