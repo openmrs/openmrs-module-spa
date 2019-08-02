@@ -20,6 +20,10 @@ public final class SingleSpaConstants {
 	
 	public static final String GP_KEY_SPA_BASE_URL = "spa.baseUrl";
 
+	public static final String GP_BODY_CONTENT_URL = "spa.bodyContentUrl";
+
+	public static final String GP_HEAD_CONTENT_URL = "spa.headContentUrl";
+
 
     private SingleSpaConstants() {
 	}
