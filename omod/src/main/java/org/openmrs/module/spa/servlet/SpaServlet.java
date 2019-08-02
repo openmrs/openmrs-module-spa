@@ -20,8 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.openmrs.module.util.SingleSpaConstants.DEFAULT_SPA_BASE_URL;
-import static org.openmrs.module.util.SingleSpaConstants.GP_KEY_SPA_BASE_URL;
+import static org.openmrs.module.util.SingleSpaConstants.*;
 
 public class SpaServlet extends HttpServlet {
 
@@ -34,6 +33,10 @@ public class SpaServlet extends HttpServlet {
 		req.setAttribute("openmrsBaseUrlContext", new String(req.getContextPath()));
 		req.setAttribute("spaBaseUrlContext",
 				Context.getAdministrationService().getGlobalProperty(GP_KEY_SPA_BASE_URL, DEFAULT_SPA_BASE_URL));
+		req.setAttribute("spaHeadContentUrl",
+				Context.getAdministrationService().getGlobalProperty(GP_HEAD_CONTENT_URL, ""));
+		req.setAttribute("spaBodyContentUrl",
+				Context.getAdministrationService().getGlobalProperty(GP_BODY_CONTENT_URL, ""));
 
 		dispatcher.forward(req, resp);
 	}

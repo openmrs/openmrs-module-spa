@@ -22,6 +22,18 @@
     </globalProperty>
 
     <globalProperty>
+        <property>spa.headContentUrl</property>
+        <defaultValue></defaultValue>
+        <description>Url to fetch content to extend head </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>spa.bodyContentUrl</property>
+        <defaultValue></defaultValue>
+        <description>Url to fetch content to extend the body </description>
+    </globalProperty>
+
+    <globalProperty>
         <property>spa.frontend.resourceBaseUrl</property>
         <defaultValue>/frontend</defaultValue>
         <description>The base URL from where Single Page Applications static resources are served</description>
