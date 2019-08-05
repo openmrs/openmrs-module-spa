@@ -21,6 +21,7 @@
       window.spaBase =  "${requestScope.spaBaseUrlContext}";
       window.getOpenmrsSpaBase = function() { return window.openmrsBase + window.spaBase + '/';};
       System.import("@openmrs/root-config");
+      System.import("@openmrs/styleguide");
     </script>
     <c:import url="${requestScope.spaHeadContentUrl}" />
   </head>
