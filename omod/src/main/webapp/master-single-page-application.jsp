@@ -11,11 +11,11 @@
     <link rel="preload" href="${cookie['import-map-override-url'] == null ? '/frontend/import-map.json' : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
     <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? '/frontend/import-map.json' : cookie['import-map-override-url'].getValue()}"></script>
     <script src="/frontend/import-map-overrides@1.7.2/dist/import-map-overrides.min.js"></script>
-    <script src="/frontend/systemjs@4.1.0/dist/system.min.js"></script>
-    <script src="/frontend/systemjs@4.1.0/dist/extras/amd.min.js"></script>
-    <script src="/frontend/systemjs@4.1.0/dist/extras/named-exports.js"></script>
-    <script src="/frontend/systemjs@4.1.0/dist/extras/named-register.min.js"></script>
-    <script src="/frontend/systemjs@4.1.0/dist/extras/use-default.min.js"></script>
+    <script src="/frontend/systemjs@5.0.0/dist/system.min.js"></script>
+    <script src="/frontend/systemjs@5.0.0/dist/extras/amd.min.js"></script>
+    <script src="/frontend/systemjs@5.0.0/dist/extras/named-exports.js"></script>
+    <script src="/frontend/systemjs@5.0.0/dist/extras/named-register.min.js"></script>
+    <script src="/frontend/systemjs@5.0.0/dist/extras/use-default.min.js"></script>
     <script>
       window.openmrsBase= "${requestScope.openmrsBaseUrlContext}";
       window.spaBase =  "${requestScope.spaBaseUrlContext}";
