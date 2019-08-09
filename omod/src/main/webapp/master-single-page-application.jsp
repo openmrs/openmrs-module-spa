@@ -23,7 +23,7 @@
       System.import("@openmrs/esm-root-config");
       System.import("@openmrs/esm-styleguide");
     </script>
-        <c:if test="${requestScope.spaHeadContentUrl != null }">
+    <c:if test="${requestScope.spaHeadContentUrl != null }">
         <c:import url="${requestScope.spaHeadContentUrl}" />
         </c:if>
   </head>
