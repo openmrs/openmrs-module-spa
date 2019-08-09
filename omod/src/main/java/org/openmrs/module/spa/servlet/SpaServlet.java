@@ -34,9 +34,9 @@ public class SpaServlet extends HttpServlet {
 		req.setAttribute("spaBaseUrlContext",
 				Context.getAdministrationService().getGlobalProperty(GP_KEY_SPA_BASE_URL, DEFAULT_SPA_BASE_URL));
 		req.setAttribute("spaHeadContentUrl",
-				Context.getAdministrationService().getGlobalProperty(GP_HEAD_CONTENT_URL, ""));
+				Context.getAdministrationService().getGlobalProperty(GP_HEAD_CONTENT_URL, null));
 		req.setAttribute("spaBodyContentUrl",
-				Context.getAdministrationService().getGlobalProperty(GP_BODY_CONTENT_URL, ""));
+				Context.getAdministrationService().getGlobalProperty(GP_BODY_CONTENT_URL, null));
 
 		dispatcher.forward(req, resp);
 	}
