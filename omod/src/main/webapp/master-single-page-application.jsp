@@ -25,7 +25,7 @@
     </script>
     <c:if test="${requestScope.spaHeadContentUrl != null }">
       <c:import url="${requestScope.spaHeadContentUrl}" />
-        </c:if>
+    </c:if>
   </head>
   <body>
     <c:if test="${requestScope.spaBodyContentUrl != null }">
