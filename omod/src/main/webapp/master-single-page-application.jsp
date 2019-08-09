@@ -24,7 +24,7 @@
       System.import("@openmrs/esm-styleguide");
     </script>
     <c:if test="${requestScope.spaHeadContentUrl != null }">
-        <c:import url="${requestScope.spaHeadContentUrl}" />
+      <c:import url="${requestScope.spaHeadContentUrl}" />
         </c:if>
   </head>
   <body>
