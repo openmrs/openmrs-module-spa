@@ -29,7 +29,7 @@
   </head>
   <body>
     <c:if test="${requestScope.spaBodyContentUrl != null }">
-    <c:import url="${requestScope.spaBodyContentUrl}" />
+      <c:import url="${requestScope.spaBodyContentUrl}" />
     </c:if>
   </body>
 </html>
