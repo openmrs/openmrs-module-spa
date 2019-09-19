@@ -11,4 +11,4 @@ ssh $USER@$HOST <<EOF
   mv ~/travis_deployments/$TRAVIS_BRANCH/*.omod ./
   cd ../ && docker-compose restart
   echo "Module SPA Successfully Deployed"
-EOF
+EOFs
