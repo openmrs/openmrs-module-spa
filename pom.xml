@@ -112,7 +112,13 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+	<repositories>
+		<repository>
+			<id>openmrs-repo</id>
+			<name>OpenMRS Nexus Repository</name>
+			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+		</repository>
+	</repositories>
 	<distributionManagement>
 		<repository>
 			<id>openmrs-repo-modules</id>
