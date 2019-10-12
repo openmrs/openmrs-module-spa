@@ -16,12 +16,12 @@
     <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.3/dist/extras/named-exports.js"></script>
     <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.3/dist/extras/named-register.min.js"></script>
     <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.3/dist/extras/use-default.min.js"></script>
-    <script type="systemjs-module" src="import:@openmrs/esm-root-config"></script>
-    <script type="systemjs-module" src="import:@openmrs/esm-styleguide"></script>
     <script>
       window.openmrsBase= "${requestScope.openmrsBaseUrlContext}";
       window.spaBase =  "${requestScope.spaBaseUrlContext}";
       window.getOpenmrsSpaBase = function() { return window.openmrsBase + window.spaBase + '/';};
+      System.import('@openmrs/esm-root-config');
+      System.import('@openmrs/esm-styleguide');
     </script>
     <c:if test="${requestScope.spaHeadContentUrl != null }">
       <c:import url="${requestScope.spaHeadContentUrl}" />
