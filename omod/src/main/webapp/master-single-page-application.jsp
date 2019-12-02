@@ -12,14 +12,14 @@
     <link rel="preload" href="${cookie['import-map-override-url'] == null ? requestScope.openmrsBaseUrlContext.concat('/frontend/import-map.json') : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
     <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? requestScope.openmrsBaseUrlContext.concat('/frontend/import-map.json') : cookie['import-map-override-url'].getValue()}"></script>
     <script src="${requestScope.openmrsBaseUrlContext}/frontend/import-map-overrides@1.9.1/dist/import-map-overrides.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.5/dist/system.min.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.5/dist/extras/amd.min.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.5/dist/extras/named-exports.min.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.5/dist/extras/named-register.min.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.5/dist/extras/use-default.min.js"></script>
+    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/system.min.js"></script>
+    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/extras/amd.min.js"></script>
+    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/extras/named-exports.min.js"></script>
+    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/extras/named-register.min.js"></script>
+    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/extras/use-default.min.js"></script>
     <script>
-      window.openmrsBase= "${requestScope.openmrsBaseUrlContext}";
-      window.spaBase =  "${requestScope.spaBaseUrlContext}";
+      window.openmrsBase = "${requestScope.openmrsBaseUrlContext}";
+      window.spaBase = "${requestScope.spaBaseUrlContext}";
       window.getOpenmrsSpaBase = function() { return window.openmrsBase + window.spaBase + '/';};
       System.import('@openmrs/esm-root-config');
       System.import('@openmrs/esm-styleguide');
