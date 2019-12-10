@@ -21,7 +21,7 @@
       window.openmrsBase = "${requestScope.openmrsBaseUrlContext}";
       window.spaBase = "${requestScope.spaBaseUrlContext}";
       window.getOpenmrsSpaBase = function() { return window.openmrsBase + window.spaBase + '/';};
-      System.import('@openmrs/esm-root-config');
+      System.import('${requestScope.spaRootConfig}');
       System.import('@openmrs/esm-styleguide');
     </script>
     <c:if test="${requestScope.spaHeadContentUrl != null }">

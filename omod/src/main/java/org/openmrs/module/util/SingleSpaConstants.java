@@ -17,8 +17,12 @@ package org.openmrs.module.util;
 public final class SingleSpaConstants {
 
     public static final String DEFAULT_SPA_BASE_URL = "/spa";
-	
+
 	public static final String GP_KEY_SPA_BASE_URL = "spa.baseUrl";
+
+	public static final String DEFAULT_ROOT_CONFIG = "@openmrs/esm-root-config";
+
+	public static final String GP_ROOT_CONFIG = "spa.rootConfig";
 
 	public static final String GP_BODY_CONTENT_URL = "spa.bodyContentUrl";
 

@@ -22,6 +22,12 @@
     </globalProperty>
 
     <globalProperty>
+        <property>spa.rootConfig</property>
+        <defaultValue>@openmrs/esm-root-config</defaultValue>
+        <description>The SPA root config ESM</description>
+    </globalProperty>
+
+    <globalProperty>
         <property>spa.headContentUrl</property>
         <defaultValue></defaultValue>
         <description>Url to fetch content to extend head </description>
