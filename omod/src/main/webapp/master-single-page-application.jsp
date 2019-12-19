@@ -11,12 +11,14 @@
     <meta name="importmap-type" content="systemjs-importmap">
     <link rel="preload" href="${cookie['import-map-override-url'] == null ? requestScope.openmrsBaseUrlContext.concat('/frontend/import-map.json') : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
     <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? requestScope.openmrsBaseUrlContext.concat('/frontend/import-map.json') : cookie['import-map-override-url'].getValue()}"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/import-map-overrides@1.9.1/dist/import-map-overrides.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/system.min.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/extras/amd.min.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/extras/named-exports.min.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/extras/named-register.min.js"></script>
-    <script src="${requestScope.openmrsBaseUrlContext}/frontend/systemjs@6.1.7/dist/extras/use-default.min.js"></script>
+
+    <%-- These resources are served from the webapp/resources directory. Update them using npm commands. --%>
+    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/import-map-overrides/dist/import-map-overrides.js"></script>
+    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/system.min.js"></script>
+    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/extras/amd.min.js"></script>
+    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/extras/named-exports.min.js"></script>
+    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/extras/named-register.min.js"></script>
+    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/extras/use-default.min.js"></script>
     <script>
       window.openmrsBase = "${requestScope.openmrsBaseUrlContext}";
       window.spaBase = "${requestScope.spaBaseUrlContext}";
