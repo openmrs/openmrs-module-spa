@@ -25,8 +25,8 @@
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-spa.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-spa.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-spa.git</url>
-	  <tag>spa-1.0.3</tag>
-  </scm>
+	    <tag>HEAD</tag>
+  	</scm>
 
 	<modules>
 		<module>api</module>
