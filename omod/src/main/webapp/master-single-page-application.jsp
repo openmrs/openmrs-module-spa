@@ -1,5 +1,23 @@
 <!DOCTYPE html>
 <%@ taglib  prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="org.openmrs.module.spa.helpers.VerifyUrl" %>
+
+<% 
+VerifyUrl object = new VerifyUrl();
+boolean isAllowed = false;
+Cookie[] cookies = request.getCookies();
+      if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().equals("import-map-override-url")) {
+           if(object.validateClientUrl(cookie.getValue()) == true){
+             isAllowed = true;
+           }else{
+              isAllowed = false;
+           }
+          }
+        }
+}
+       %>
 <html>
   <head>
     <meta charset="utf-8">
@@ -9,7 +27,8 @@
     <base href="${requestScope.openmrsBaseUrlContext}${requestScope.spaBaseUrlContext}${'/'}" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="importmap-type" content="systemjs-importmap">
-    <link rel="preload" href="${cookie['import-map-override-url'] == null ? requestScope.openmrsBaseUrlContext.concat('/frontend/import-map.json') : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
+    <link rel="preload" href="${ isAllowed == true ? requestScope.openmrsBaseUrlContext.concat('/frontend/import-map.json') : cookie['import-map-override-url'].getValue() }"
+    as="fetch" crossorigin="anonymous" />
     <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? requestScope.openmrsBaseUrlContext.concat('/frontend/import-map.json') : cookie['import-map-override-url'].getValue()}"></script>
 
     <%-- These resources are served from the webapp/resources directory. Update them using npm commands. --%>

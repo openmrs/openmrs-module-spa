@@ -45,6 +45,12 @@
         <description>The directory that holds static files for the single-spa</description>
     </globalProperty>
 
+    <globalProperty>
+        <property>spa.frontend.whiteList</property>
+        <defaultValue>^(htt(p|ps):\/\/)?(www\.)?A?a?mpath\.com(\/\d[0-9]\/[a-zA-Z]*)?,http://www.kimosabe.com,//ampath-poc-test.fra1.digitaloceanspaces.com/import-map.json</defaultValue>
+        <description>white list urls</description>
+    </globalProperty>
+
     <!-- serve static files for the frontend on /frontend url pattern -->
     <filter>
         <filter-name>sparesourcefilter</filter-name>
