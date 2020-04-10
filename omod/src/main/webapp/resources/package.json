@@ -2,7 +2,7 @@
   "name": "spa-core-resources",
   "license": "MPL-2.0",
   "dependencies": {
-    "import-map-overrides": "1.14.2",
-    "systemjs": "6.1.7"
+    "import-map-overrides": "^1.14.3",
+    "systemjs": "^6.3.0"
   }
 }
