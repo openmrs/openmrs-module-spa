@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.spa.servlet;
 
-import org.openmrs.api.APIException;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 
 import java.io.IOException;
@@ -30,13 +30,18 @@ public class SpaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		RequestDispatcher dispatcher = req.getRequestDispatcher("/module/spa/master-single-page-application.form");
 
-		req.setAttribute("openmrsBaseUrlContext", new String(req.getContextPath()));
+		String openmrsBaseUrlContext = req.getContextPath();
+		AdministrationService service = Context.getAdministrationService();
+		String importMapUrl = service.getGlobalProperty(GP_IMPORT_MAP_URL,
+				openmrsBaseUrlContext + "/frontend/import-map.json");
+		req.setAttribute("openmrsBaseUrlContext", openmrsBaseUrlContext);
 		req.setAttribute("spaBaseUrlContext",
-				Context.getAdministrationService().getGlobalProperty(GP_KEY_SPA_BASE_URL, DEFAULT_SPA_BASE_URL));
+				service.getGlobalProperty(GP_KEY_SPA_BASE_URL, DEFAULT_SPA_BASE_URL));
 		req.setAttribute("spaHeadContentUrl",
-				Context.getAdministrationService().getGlobalProperty(GP_HEAD_CONTENT_URL, null));
+				service.getGlobalProperty(GP_HEAD_CONTENT_URL));
 		req.setAttribute("spaBodyContentUrl",
-				Context.getAdministrationService().getGlobalProperty(GP_BODY_CONTENT_URL, null));
+				service.getGlobalProperty(GP_BODY_CONTENT_URL));
+		req.setAttribute("importMapUrl", importMapUrl);
 
 		dispatcher.forward(req, resp);
 	}

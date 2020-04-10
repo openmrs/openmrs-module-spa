@@ -9,8 +9,8 @@
     <base href="${requestScope.openmrsBaseUrlContext}${requestScope.spaBaseUrlContext}${'/'}" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="importmap-type" content="systemjs-importmap">
-    <link rel="preload" href="${cookie['import-map-override-url'] == null ? requestScope.openmrsBaseUrlContext.concat('/frontend/import-map.json') : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
-    <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? requestScope.openmrsBaseUrlContext.concat('/frontend/import-map.json') : cookie['import-map-override-url'].getValue()}"></script>
+    <link rel="preload" href="${cookie['import-map-override-url'] == null ? requestScope.importMapUrl : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
+    <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? requestScope.importMapUrl : cookie['import-map-override-url'].getValue()}"></script>
 
     <%-- These resources are served from the webapp/resources directory. Update them using npm commands. --%>
     <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/import-map-overrides/dist/import-map-overrides.js"></script>
