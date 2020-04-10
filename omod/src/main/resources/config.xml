@@ -45,6 +45,12 @@
         <description>The directory that holds static files for the single-spa</description>
     </globalProperty>
 
+    <globalProperty>
+        <property>spa.importMapUrl</property>
+        <defaultValue></defaultValue>
+        <description>A custom URL for the import map. Defaults to /[openmrsBase]/frontend/import-map.json</description>
+    </globalProperty>
+
     <!-- serve static files for the frontend on /frontend url pattern -->
     <filter>
         <filter-name>sparesourcefilter</filter-name>

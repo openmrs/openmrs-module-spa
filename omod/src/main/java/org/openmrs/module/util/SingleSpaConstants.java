@@ -24,6 +24,7 @@ public final class SingleSpaConstants {
 
 	public static final String GP_HEAD_CONTENT_URL = "spa.headContentUrl";
 
+	public static final String GP_IMPORT_MAP_URL = "spa.importMapUrl";
 
     private SingleSpaConstants() {
 	}
