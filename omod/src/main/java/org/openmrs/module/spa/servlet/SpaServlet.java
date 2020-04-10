@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.spa.servlet;
 
-import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 
@@ -33,10 +32,8 @@ public class SpaServlet extends HttpServlet {
 
 		String openmrsBaseUrlContext = req.getContextPath();
 		AdministrationService service = Context.getAdministrationService();
-		String importMapUrl = service.getGlobalProperty(GP_IMPORT_MAP_URL);
-		if (importMapUrl == null) {
-			importMapUrl = openmrsBaseUrlContext + "/frontend/import-map.json";
-		}
+		String importMapUrl = service.getGlobalProperty(GP_IMPORT_MAP_URL,
+				openmrsBaseUrlContext + "/frontend/import-map.json");
 		req.setAttribute("openmrsBaseUrlContext", openmrsBaseUrlContext);
 		req.setAttribute("spaBaseUrlContext",
 				service.getGlobalProperty(GP_KEY_SPA_BASE_URL, DEFAULT_SPA_BASE_URL));
