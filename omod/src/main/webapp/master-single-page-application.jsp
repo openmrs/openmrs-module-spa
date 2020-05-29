@@ -11,20 +11,16 @@
     <meta name="importmap-type" content="systemjs-importmap">
     <link rel="preload" href="${cookie['import-map-override-url'] == null ? requestScope.importMapUrl : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
     <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? requestScope.importMapUrl : cookie['import-map-override-url'].getValue()}"></script>
-
-    <%-- These resources are served from the webapp/resources directory. Update them using npm commands. --%>
-    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/import-map-overrides/dist/import-map-overrides.js"></script>
-    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/system.min.js"></script>
-    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/extras/amd.min.js"></script>
-    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/extras/named-exports.min.js"></script>
-    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/extras/named-register.min.js"></script>
-    <script src="${pageContext.request.contextPath}/moduleResources/spa/node_modules/systemjs/dist/extras/use-default.min.js"></script>
+    <script src="${pageContext.request.contextPath}/moduleResources/spa/openmrs.js"></script>
     <script>
-      window.openmrsBase = "${requestScope.openmrsBaseUrlContext}";
-      window.spaBase = "${requestScope.spaBaseUrlContext}";
-      window.getOpenmrsSpaBase = function() { return window.openmrsBase + window.spaBase + '/';};
-      System.import('@openmrs/esm-root-config');
-      System.import('@openmrs/esm-styleguide');
+      initializeSpa({
+        openmrsBase: "${requestScope.openmrsBaseUrlContext}",
+        spaBase: "${requestScope.spaBaseUrlContext}",
+        coreLibs: [
+          "@openmrs/esm-root-config",
+          "@openmrs/esm-styleguide"
+        ]
+      });
     </script>
     <c:if test="${requestScope.spaHeadContentUrl != null }">
       <c:import url="${requestScope.spaHeadContentUrl}" />
