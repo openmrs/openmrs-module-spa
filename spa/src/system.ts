@@ -7,6 +7,8 @@ import "systemjs/dist/extras/use-default";
 
 /**
  * Gets the loaded import maps from SystemJS.
+ * TODO: Once there is an official API for this we should
+ * replace this function with the official API.
  */
 export function getImportMaps() {
   return Object.getOwnPropertySymbols(System)

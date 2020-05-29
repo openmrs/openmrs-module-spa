@@ -5,11 +5,17 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
+    "i18next-browser-languagedetector": "^4.1.1",
+    "i18next-icu": "^1.1.2",
+    "i18next-xhr-backend": "^3.2.2",
     "import-map-overrides": "^1.15.2",
     "systemjs": "^6.3.2"
   },
   "devDependencies": {
     "@types/systemjs": "^6.1.0",
+    "i18next": "^19.0.0",
+    "react-i18next": "^11.2.1",
+    "single-spa": "^4.4.1",
     "ts-loader": "^7.0.4",
     "typescript": "^3.9.3",
     "webpack": "^4.43.0",
