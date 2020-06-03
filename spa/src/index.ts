@@ -1,6 +1,6 @@
 import { i18n } from "i18next";
 import { getImportMaps, loadModules } from "./system";
-import { setupLocale } from "./locale";
+import { setupI18n } from "./locale";
 
 const singleSpa = "single-spa";
 
@@ -93,11 +93,9 @@ function setupApps(modules: Array<[string, System.Module]>) {
  */
 function runShell() {
   return System.import(singleSpa).then(({ start }) => {
-    return setupLocale()
-      .then(start)
-      .catch((err) => {
-        console.error(`Failed to initialize i18next translations`, err);
-      });
+    return setupI18n()
+      .catch((err) => console.error(`Failed to initialize translations`, err))
+      .then(start);
   });
 }
 

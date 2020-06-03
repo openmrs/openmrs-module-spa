@@ -21,7 +21,7 @@ function decodeHtmlEntity(html: string) {
   return textArea.value;
 }
 
-export function setupLocale() {
+export function setupI18n() {
   return Promise.all([
     System.import("i18next"),
     System.import("react-i18next"),
@@ -39,6 +39,7 @@ export function setupLocale() {
           loadPath: "{{lng}}|{{ns}}",
           ajax(url, _, callback) {
             const [language, namespace] = url.split("|");
+
             if (namespace === "translation") {
               callback(null, { status: 404 });
             } else {
