@@ -11,12 +11,9 @@ package org.openmrs.module.spa;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.AdministrationService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.ModuleException;
 import org.openmrs.module.spa.utils.SpaModuleUtils;
-import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
 

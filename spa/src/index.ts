@@ -1,10 +1,13 @@
+import { i18n } from "i18next";
 import { getImportMaps, loadModules } from "./system";
+import { setupI18n } from "./locale";
 
 const singleSpa = "single-spa";
 
 declare global {
   interface Window extends SpaConfig {
     getOpenmrsSpaBase(): string;
+    i18next: i18n;
   }
 }
 
@@ -43,6 +46,22 @@ function loadApps() {
 }
 
 /**
+ * Normalizes the activator function, i.e., if we receive a
+ * string we'll prepend the SPA base (prefix). We'll also handle
+ * the case of a supplied array.
+ * @param activator The activator to preprocess.
+ */
+function preprocessActivator(activator: unknown) {
+  if (Array.isArray(activator)) {
+    return activator.map(preprocessActivator);
+  } else if (typeof activator === "string") {
+    return window.getOpenmrsSpaBase() + activator;
+  } else {
+    return activator;
+  }
+}
+
+/**
  * Sets up the microfrontends (apps). Uses the defined export
  * from the root modules of the apps, which should export a
  * special function called "setupOpenMRS".
@@ -58,11 +77,26 @@ function setupApps(modules: Array<[string, System.Module]>) {
 
       if (result && typeof result === "object") {
         System.import(singleSpa).then(({ registerApplication }) => {
-          registerApplication(appName, result.lifecycle, result.activate);
+          registerApplication(
+            appName,
+            result.lifecycle,
+            preprocessActivator(result.activate)
+          );
         });
       }
     }
   }
+}
+
+/**
+ * Runs the shell by importing the translations and starting single SPA.
+ */
+function runShell() {
+  return System.import(singleSpa).then(({ start }) => {
+    return setupI18n()
+      .catch((err) => console.error(`Failed to initialize translations`, err))
+      .then(start);
+  });
 }
 
 /**
@@ -78,5 +112,6 @@ export function initializeSpa(config: SpaConfig) {
 
   return loadModules([...libs, singleSpa])
     .then(loadApps)
-    .then(setupApps);
+    .then(setupApps)
+    .then(runShell);
 }
