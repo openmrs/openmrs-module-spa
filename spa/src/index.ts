@@ -1,6 +1,12 @@
 import { i18n } from "i18next";
 import { getImportMaps, loadModules } from "./system";
 import { setupI18n } from "./locale";
+import {
+  routePrefix,
+  Activator,
+  ActivatorDefinition,
+  routeRegex,
+} from "./helpers";
 
 const singleSpa = "single-spa";
 
@@ -51,11 +57,16 @@ function loadApps() {
  * the case of a supplied array.
  * @param activator The activator to preprocess.
  */
-function preprocessActivator(activator: unknown) {
+function preprocessActivator(
+  activator: ActivatorDefinition | Array<ActivatorDefinition>
+): Activator {
   if (Array.isArray(activator)) {
-    return activator.map(preprocessActivator);
+    const activators = activator.map(preprocessActivator);
+    return (location) => activators.some((activator) => activator(location));
   } else if (typeof activator === "string") {
-    return window.getOpenmrsSpaBase() + activator;
+    return (location) => routePrefix(activator, location);
+  } else if (activator instanceof RegExp) {
+    return (location) => routeRegex(activator, location);
   } else {
     return activator;
   }
