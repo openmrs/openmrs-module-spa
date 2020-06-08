@@ -17,7 +17,6 @@
         openmrsBase: "${requestScope.openmrsBaseUrlContext}",
         spaBase: "${requestScope.spaBaseUrlContext}",
         coreLibs: [
-          "@openmrs/esm-root-config",
           "@openmrs/esm-styleguide"
         ]
       });
