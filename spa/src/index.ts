@@ -26,12 +26,12 @@ export interface SpaConfig {
    * The base path for the SPA root path.
    */
   spaBase: string;
-  /**
-   * The names of additional modules to load initially,
-   * if any.
-   */
-  coreLibs?: Array<string>;
 }
+
+const coreLibs = [
+  "@openmrs/esm-styleguide",
+  "@openmrs/esm-module-config"
+]
 
 /**
  * Gets the microfrontend modules (apps). These are entries
@@ -49,6 +49,39 @@ function getApps(maps: Record<string, string>) {
  */
 function loadApps() {
   return loadModules(getApps(getImportMaps()));
+}
+
+/**
+ * Loads 'root-config' and returns its activatorOverrides object if present
+ */
+async function loadOptionalRootConfig(): Promise<ActivatorOverrides | void> {
+  let rootConfigExists: boolean;
+  try {
+    System.resolve("root-config");
+    rootConfigExists = true;
+  } catch {
+    rootConfigExists = false;
+  }
+  if (rootConfigExists) {
+    try {
+      const rootConfig = await System.import("root-config");
+      if (rootConfig.activatorOverrides) {
+        if (
+          typeof rootConfig.activatorOverrides === "object" &&
+          !Array.isArray(rootConfig.activatorOverrides)
+        ) {
+          return rootConfig.activatorOverrides;
+        } else {
+          throw Error(
+            "activatorOverrides must be an object with module names as keys. Got type " +
+              typeof rootConfig.activatorOverrides
+          );
+        }
+      }
+    } catch (e) {
+      throw Error("Problem importing root-config: " + e);
+    }
+  }
 }
 
 /**
@@ -79,7 +112,11 @@ function preprocessActivator(
  * This function returns an object that is used to feed Single
  * SPA.
  */
-function setupApps(modules: Array<[string, System.Module]>) {
+function setupApps(
+  modules: Array<[string, System.Module]>,
+  activatorOverrides: ActivatorOverrides
+) {
+  const promises: Promise<void>[] = [];
   for (const [appName, appExports] of modules) {
     const setup = appExports.setupOpenMRS;
 
@@ -87,16 +124,18 @@ function setupApps(modules: Array<[string, System.Module]>) {
       const result = setup();
 
       if (result && typeof result === "object") {
-        System.import(singleSpa).then(({ registerApplication }) => {
+        const activator = activatorOverrides[appName] || result.activate;
+        promises.push(System.import(singleSpa).then(({ registerApplication }) => {
           registerApplication(
             appName,
             result.lifecycle,
-            preprocessActivator(result.activate)
+            preprocessActivator(activator)
           );
-        });
+        }));
       }
     }
   }
+  return Promise.all(promises);
 }
 
 /**
@@ -114,15 +153,22 @@ function runShell() {
  * Initializes the OpenMRS Microfrontend App Shell.
  * @param config The global configuration to apply.
  */
-export function initializeSpa(config: SpaConfig) {
-  const libs = config.coreLibs ?? [];
+export async function initializeSpa(config: SpaConfig) {
+  const libs = coreLibs;
 
   window.openmrsBase = config.openmrsBase;
   window.spaBase = config.spaBase;
   window.getOpenmrsSpaBase = () => `${window.openmrsBase}${window.spaBase}/`;
 
-  return loadModules([...libs, singleSpa])
-    .then(loadApps)
-    .then(setupApps)
-    .then(runShell);
+  await loadModules([...libs, singleSpa]);
+  const [apps, activatorOverrides] = await Promise.all([
+    loadApps(),
+    loadOptionalRootConfig()
+  ]);
+  await setupApps(apps, activatorOverrides || {});
+  runShell();
 }
+
+type ActivatorOverrides = {
+  [moduleName: string]: ActivatorDefinition;
+};
