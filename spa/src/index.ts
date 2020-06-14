@@ -26,12 +26,12 @@ export interface SpaConfig {
    * The base path for the SPA root path.
    */
   spaBase: string;
+  /**
+   * The names of additional modules to load initially,
+   * if any.
+   */
+  coreLibs?: Array<string>;
 }
-
-const coreLibs = [
-  "@openmrs/esm-styleguide",
-  "@openmrs/esm-module-config"
-]
 
 /**
  * Gets the microfrontend modules (apps). These are entries
@@ -154,7 +154,7 @@ function runShell() {
  * @param config The global configuration to apply.
  */
 export async function initializeSpa(config: SpaConfig) {
-  const libs = coreLibs;
+  const libs = config.coreLibs ?? [];
 
   window.openmrsBase = config.openmrsBase;
   window.spaBase = config.spaBase;

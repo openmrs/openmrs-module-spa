@@ -4562,10 +4562,6 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 const singleSpa = "single-spa";
-const coreLibs = [
-    "@openmrs/esm-styleguide",
-    "@openmrs/esm-module-config"
-];
 /**
  * Gets the microfrontend modules (apps). These are entries
  * in the import maps that end with "-app".
@@ -4674,8 +4670,9 @@ function runShell() {
  * @param config The global configuration to apply.
  */
 function initializeSpa(config) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const libs = coreLibs;
+        const libs = (_a = config.coreLibs) !== null && _a !== void 0 ? _a : [];
         window.openmrsBase = config.openmrsBase;
         window.spaBase = config.spaBase;
         window.getOpenmrsSpaBase = () => `${window.openmrsBase}${window.spaBase}/`;
