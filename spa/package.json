@@ -2,7 +2,10 @@
   "name": "spa-core-resources",
   "license": "MPL-2.0",
   "scripts": {
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "webpack-dev": "webpack --mode development --watch",
+    "browsersync": "./browsersync.js",
+    "start": "concurrently npm:webpack-dev npm:browsersync"
   },
   "dependencies": {
     "i18next-browser-languagedetector": "^4.1.1",
@@ -13,6 +16,8 @@
   },
   "devDependencies": {
     "@types/systemjs": "^6.1.0",
+    "browser-sync": "^2.26.7",
+    "concurrently": "^5.2.0",
     "i18next": "^19.0.0",
     "react-i18next": "^11.2.1",
     "single-spa": "^4.4.1",
