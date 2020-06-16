@@ -1,4 +1,4 @@
-# openmrs-frontend-spa
+# openmrs-module-spa
 
 [![Build Status](https://travis-ci.com/openmrs/openmrs-module-spa.svg?branch=master)](https://travis-ci.com/openmrs/openmrs-module-spa)
 
