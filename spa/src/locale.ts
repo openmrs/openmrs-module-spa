@@ -1,6 +1,13 @@
 import ICU from "i18next-icu";
 import i18nextXhrBackend from "i18next-xhr-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
+import { i18n } from "i18next";
+
+declare global {
+  interface Window {
+    i18next: i18n;
+  }
+}
 
 const languageChangeObserver = new MutationObserver(() => {
   const reDetect: any = undefined;
