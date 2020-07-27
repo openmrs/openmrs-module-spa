@@ -1,5 +1,6 @@
-import { i18n } from "i18next";
+import { ExtensionDefinition, createExtensions } from "./extensions";
 import { getImportMaps, loadModules } from "./system";
+import { singleSpa } from "./constants";
 import { setupI18n } from "./locale";
 import {
   routePrefix,
@@ -8,12 +9,9 @@ import {
   routeRegex,
 } from "./helpers";
 
-const singleSpa = "single-spa";
-
 declare global {
   interface Window extends SpaConfig {
     getOpenmrsSpaBase(): string;
-    i18next: i18n;
   }
 }
 
@@ -80,6 +78,8 @@ function preprocessActivator(
  * SPA.
  */
 function setupApps(modules: Array<[string, System.Module]>) {
+  const extensions = createExtensions();
+
   for (const [appName, appExports] of modules) {
     const setup = appExports.setupOpenMRS;
 
@@ -88,6 +88,18 @@ function setupApps(modules: Array<[string, System.Module]>) {
 
       if (result && typeof result === "object") {
         System.import(singleSpa).then(({ registerApplication }) => {
+          const availableExtensions: Array<ExtensionDefinition> =
+            result.extensions ?? [];
+
+          for (const { name, load } of availableExtensions) {
+            const components = extensions[name] || (extensions[name] = []);
+            components.push({
+              name,
+              load,
+              appName,
+            });
+          }
+
           registerApplication(
             appName,
             result.lifecycle,
