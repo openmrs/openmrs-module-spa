@@ -1,6 +1,4 @@
-import { ExtensionDefinition, createExtensions } from "./extensions";
 import { getImportMaps, loadModules } from "./system";
-import { singleSpa } from "./constants";
 import { setupI18n } from "./locale";
 import {
   routePrefix,
@@ -78,8 +76,6 @@ function preprocessActivator(
  * SPA.
  */
 function setupApps(modules: Array<[string, System.Module]>) {
-  const extensions = createExtensions();
-
   for (const [appName, appExports] of modules) {
     const setup = appExports.setupOpenMRS;
 
@@ -87,24 +83,20 @@ function setupApps(modules: Array<[string, System.Module]>) {
       const result = setup();
 
       if (result && typeof result === "object") {
-        System.import(singleSpa).then(({ registerApplication }) => {
-          const availableExtensions: Array<ExtensionDefinition> =
-            result.extensions ?? [];
+        System.import("single-spa").then(({ registerApplication }) => {
+          System.import("@openmrs/esm-extension-manager").then(({ registerExtension }) => {
+            const availableExtensions = result.extensions ?? [];
 
-          for (const { name, load } of availableExtensions) {
-            const components = extensions[name] || (extensions[name] = []);
-            components.push({
-              name,
-              load,
+            for (const { name, load } of availableExtensions) {
+              registerExtension({ name, load, appName })
+            }
+
+            registerApplication(
               appName,
-            });
-          }
-
-          registerApplication(
-            appName,
-            result.lifecycle,
-            preprocessActivator(result.activate)
-          );
+              result.lifecycle,
+              preprocessActivator(result.activate)
+            );
+          });
         });
       }
     }
@@ -115,7 +107,7 @@ function setupApps(modules: Array<[string, System.Module]>) {
  * Runs the shell by importing the translations and starting single SPA.
  */
 function runShell() {
-  return System.import(singleSpa).then(({ start }) => {
+  return System.import("single-spa").then(({ start }) => {
     return setupI18n()
       .catch((err) => console.error(`Failed to initialize translations`, err))
       .then(start);
@@ -127,13 +119,17 @@ function runShell() {
  * @param config The global configuration to apply.
  */
 export function initializeSpa(config: SpaConfig) {
-  const libs = config.coreLibs ?? [];
+  const libs = [
+    "single-spa",
+    "@openmrs/esm-styleguide",
+    "@openmrs/esm-extension-manager"
+  ];
 
   window.openmrsBase = config.openmrsBase;
   window.spaBase = config.spaBase;
   window.getOpenmrsSpaBase = () => `${window.openmrsBase}${window.spaBase}/`;
 
-  return loadModules([...libs, singleSpa])
+  return loadModules(libs)
     .then(loadApps)
     .then(setupApps)
     .then(runShell);

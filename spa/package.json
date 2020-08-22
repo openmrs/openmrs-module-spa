@@ -15,6 +15,7 @@
     "systemjs": "^6.3.3"
   },
   "devDependencies": {
+    "@openmrs/esm-extension-manager": "file:../../mf/openmrs-esm-extension-manager",
     "@types/systemjs": "^6.1.0",
     "browser-sync": "^2.26.7",
     "concurrently": "^5.2.0",

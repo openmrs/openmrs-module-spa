@@ -4556,69 +4556,6 @@ module.exports = g;
 
 /***/ }),
 
-/***/ "./src/constants.ts":
-/*!**************************!*\
-  !*** ./src/constants.ts ***!
-  \**************************/
-/*! exports provided: singleSpa, react */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "singleSpa", function() { return singleSpa; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "react", function() { return react; });
-const singleSpa = "single-spa";
-const react = "react";
-
-
-/***/ }),
-
-/***/ "./src/extensions.ts":
-/*!***************************!*\
-  !*** ./src/extensions.ts ***!
-  \***************************/
-/*! exports provided: createExtensions */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createExtensions", function() { return createExtensions; });
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./src/constants.ts");
-
-/**
- * Creates the extension component <-> extension slot management engine.
- *
- * Essentially provides the `renderOpenmrsExtension` function for
- * updating a DOM node (representing a so-called "extension slot")
- * dynamically with a lazy loaded component from *any* microfrontend
- * that registered an extension component for this slot.
- *
- * The critical piece of information is the "name" parameter, which
- * creates the connection "component" <-> "slot".
- */
-function createExtensions() {
-    const extensions = {};
-    System.import(_constants__WEBPACK_IMPORTED_MODULE_0__["singleSpa"]).then(({ mountRootParcel }) => {
-        window.renderOpenmrsExtension = (domElement, name, params) => {
-            var _a;
-            const components = (_a = extensions[name]) !== null && _a !== void 0 ? _a : [];
-            const parcels = [];
-            let active = true;
-            if (domElement) {
-                components.map(({ load }) => load().then(({ default: result }) => active &&
-                    parcels.push(mountRootParcel(result, Object.assign({ domElement }, params)))));
-            }
-            return () => {
-                active = false;
-            };
-        };
-    });
-    return extensions;
-}
-
-
-/***/ }),
-
 /***/ "./src/helpers.ts":
 /*!************************!*\
   !*** ./src/helpers.ts ***!
@@ -4651,13 +4588,9 @@ function routeRegex(regex, location) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initializeSpa", function() { return initializeSpa; });
-/* harmony import */ var _extensions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./extensions */ "./src/extensions.ts");
-/* harmony import */ var _system__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./system */ "./src/system.ts");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./constants */ "./src/constants.ts");
-/* harmony import */ var _locale__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./locale */ "./src/locale.ts");
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./helpers */ "./src/helpers.ts");
-
-
+/* harmony import */ var _system__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./system */ "./src/system.ts");
+/* harmony import */ var _locale__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./locale */ "./src/locale.ts");
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./helpers */ "./src/helpers.ts");
 
 
 
@@ -4675,7 +4608,7 @@ function getApps(maps) {
  * import maps initialized, i.e., after modules loaded.
  */
 function loadApps() {
-    return Object(_system__WEBPACK_IMPORTED_MODULE_1__["loadModules"])(getApps(Object(_system__WEBPACK_IMPORTED_MODULE_1__["getImportMaps"])()));
+    return Object(_system__WEBPACK_IMPORTED_MODULE_0__["loadModules"])(getApps(Object(_system__WEBPACK_IMPORTED_MODULE_0__["getImportMaps"])()));
 }
 /**
  * Normalizes the activator function, i.e., if we receive a
@@ -4689,10 +4622,10 @@ function preprocessActivator(activator) {
         return (location) => activators.some((activator) => activator(location));
     }
     else if (typeof activator === "string") {
-        return (location) => Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["routePrefix"])(activator, location);
+        return (location) => Object(_helpers__WEBPACK_IMPORTED_MODULE_2__["routePrefix"])(activator, location);
     }
     else if (activator instanceof RegExp) {
-        return (location) => Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["routeRegex"])(activator, location);
+        return (location) => Object(_helpers__WEBPACK_IMPORTED_MODULE_2__["routeRegex"])(activator, location);
     }
     else {
         return activator;
@@ -4706,24 +4639,20 @@ function preprocessActivator(activator) {
  * SPA.
  */
 function setupApps(modules) {
-    const extensions = Object(_extensions__WEBPACK_IMPORTED_MODULE_0__["createExtensions"])();
     for (const [appName, appExports] of modules) {
         const setup = appExports.setupOpenMRS;
         if (typeof setup === "function") {
             const result = setup();
             if (result && typeof result === "object") {
-                System.import(_constants__WEBPACK_IMPORTED_MODULE_2__["singleSpa"]).then(({ registerApplication }) => {
-                    var _a;
-                    const availableExtensions = (_a = result.extensions) !== null && _a !== void 0 ? _a : [];
-                    for (const { name, load } of availableExtensions) {
-                        const components = extensions[name] || (extensions[name] = []);
-                        components.push({
-                            name,
-                            load,
-                            appName,
-                        });
-                    }
-                    registerApplication(appName, result.lifecycle, preprocessActivator(result.activate));
+                System.import("single-spa").then(({ registerApplication }) => {
+                    System.import("@openmrs/esm-extension-manager").then(({ registerExtension }) => {
+                        var _a;
+                        const availableExtensions = (_a = result.extensions) !== null && _a !== void 0 ? _a : [];
+                        for (const { name, load } of availableExtensions) {
+                            registerExtension({ name, load, appName });
+                        }
+                        registerApplication(appName, result.lifecycle, preprocessActivator(result.activate));
+                    });
                 });
             }
         }
@@ -4733,8 +4662,8 @@ function setupApps(modules) {
  * Runs the shell by importing the translations and starting single SPA.
  */
 function runShell() {
-    return System.import(_constants__WEBPACK_IMPORTED_MODULE_2__["singleSpa"]).then(({ start }) => {
-        return Object(_locale__WEBPACK_IMPORTED_MODULE_3__["setupI18n"])()
+    return System.import("single-spa").then(({ start }) => {
+        return Object(_locale__WEBPACK_IMPORTED_MODULE_1__["setupI18n"])()
             .catch((err) => console.error(`Failed to initialize translations`, err))
             .then(start);
     });
@@ -4744,12 +4673,15 @@ function runShell() {
  * @param config The global configuration to apply.
  */
 function initializeSpa(config) {
-    var _a;
-    const libs = (_a = config.coreLibs) !== null && _a !== void 0 ? _a : [];
+    const libs = [
+        "single-spa",
+        "@openmrs/esm-styleguide",
+        "@openmrs/esm-extension-manager"
+    ];
     window.openmrsBase = config.openmrsBase;
     window.spaBase = config.spaBase;
     window.getOpenmrsSpaBase = () => `${window.openmrsBase}${window.spaBase}/`;
-    return Object(_system__WEBPACK_IMPORTED_MODULE_1__["loadModules"])([...libs, _constants__WEBPACK_IMPORTED_MODULE_2__["singleSpa"]])
+    return Object(_system__WEBPACK_IMPORTED_MODULE_0__["loadModules"])(libs)
         .then(loadApps)
         .then(setupApps)
         .then(runShell);
