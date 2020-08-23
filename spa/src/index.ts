@@ -1,4 +1,4 @@
-import { getImportMaps, loadModules } from "./system";
+import { loadModules } from "./system";
 import { ExtensionDefinition } from "@openmrs/esm-extension-manager";
 import { setupI18n } from "./locale";
 import {
@@ -11,7 +11,14 @@ import {
 declare global {
   interface Window extends SpaConfig {
     getOpenmrsSpaBase(): string;
+    importMapOverrides: {
+      getCurrentPageMap: () => Promise<ImportMap>;
+    }
   }
+}
+
+interface ImportMap {
+  imports: Record<string, string>
 }
 
 export interface SpaConfig {
@@ -45,7 +52,9 @@ function getApps(maps: Record<string, string>) {
  * import maps initialized, i.e., after modules loaded.
  */
 function loadApps() {
-  return loadModules(getApps(getImportMaps()));
+  return window.importMapOverrides
+    .getCurrentPageMap()
+    .then((importMap) => loadModules(getApps(importMap.imports)));
 }
 
 /**
