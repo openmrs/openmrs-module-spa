@@ -1,4 +1,5 @@
 import { getImportMaps, loadModules } from "./system";
+import { ExtensionDefinition } from "@openmrs/esm-extension-manager";
 import { setupI18n } from "./locale";
 import {
   routePrefix,
@@ -85,7 +86,7 @@ function setupApps(modules: Array<[string, System.Module]>) {
       if (result && typeof result === "object") {
         System.import("single-spa").then(({ registerApplication }) => {
           System.import("@openmrs/esm-extension-manager").then(({ registerExtension }) => {
-            const availableExtensions = result.extensions ?? [];
+            const availableExtensions: Array<ExtensionDefinition> = result.extensions ?? [];
 
             for (const { name, load } of availableExtensions) {
               registerExtension({ name, load, appName })
