@@ -15,10 +15,7 @@
     <script>
       initializeSpa({
         openmrsBase: "${requestScope.openmrsBaseUrlContext}",
-        spaBase: "${requestScope.spaBaseUrlContext}",
-        coreLibs: [
-          "@openmrs/esm-styleguide"
-        ]
+        spaBase: "${requestScope.spaBaseUrlContext}"
       });
     </script>
     <c:if test="${requestScope.spaHeadContentUrl != null }">
