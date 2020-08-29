@@ -85,19 +85,22 @@ function setupApps(modules: Array<[string, System.Module]>) {
 
       if (result && typeof result === "object") {
         System.import("single-spa").then(({ registerApplication }) => {
-          System.import("@openmrs/esm-extension-manager").then(({ registerExtension }) => {
-            const availableExtensions: Array<ExtensionDefinition> = result.extensions ?? [];
+          System.import("@openmrs/esm-extension-manager").then(
+            ({ registerExtension }) => {
+              const availableExtensions: Array<ExtensionDefinition> =
+                result.extensions ?? [];
 
-            for (const { name, load } of availableExtensions) {
-              registerExtension({ name, load, appName })
+              for (const { name, load } of availableExtensions) {
+                registerExtension({ name, load, appName });
+              }
+
+              registerApplication(
+                appName,
+                result.lifecycle,
+                preprocessActivator(result.activate)
+              );
             }
-
-            registerApplication(
-              appName,
-              result.lifecycle,
-              preprocessActivator(result.activate)
-            );
-          });
+          );
         });
       }
     }
@@ -123,7 +126,7 @@ export function initializeSpa(config: SpaConfig) {
   const libs = [
     "single-spa",
     "@openmrs/esm-styleguide",
-    "@openmrs/esm-extension-manager"
+    "@openmrs/esm-extension-manager",
   ];
 
   window.openmrsBase = config.openmrsBase;
@@ -133,5 +136,40 @@ export function initializeSpa(config: SpaConfig) {
   return loadModules(libs)
     .then(loadApps)
     .then(setupApps)
-    .then(runShell);
+    .then(runShell)
+    .catch(handleInitFailure);
+}
+
+function handleInitFailure() {
+  if (localStorage.getItem("openmrs:devtools")) {
+    renderDevResetButton();
+  } else {
+    renderApology();
+  }
+}
+
+function renderApology() {
+  const msg = document.createTextNode("Sorry, something has gone as badly as possible");
+  document.appendChild(msg);
+}
+
+function renderDevResetButton() {
+  const btn = document.createElement("button");
+  btn.onclick = clearDevOverrides;
+  btn.innerHTML = "Reset dev overrides";
+  document.body.appendChild(btn);
+}
+
+function clearDevOverrides() {
+  for (let key of Object.keys(localStorage)) {
+    if (
+      key.startsWith("import-map-override:") &&
+      !["import-map-override:react", "import-map-override:react-dom"].includes(
+        key
+      )
+    ) {
+      localStorage.removeItem(key);
+    }
+  }
+  location.reload();
 }
