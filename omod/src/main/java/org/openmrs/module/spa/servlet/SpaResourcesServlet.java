@@ -9,24 +9,23 @@
  */
 package org.openmrs.module.spa.servlet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.AdministrationService;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.spa.utils.SpaModuleUtils;
-import org.openmrs.util.OpenmrsUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.spa.utils.SpaModuleUtils;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
- * A servlet that handles requests for the frontend static resources
- * All requests with /frontend are handled by the class
+ * A servlet that handles requests for the frontend static resources All
+ * requests with /frontend are handled by the class
  */
 public class SpaResourcesServlet extends HttpServlet {
 
@@ -42,38 +41,38 @@ public class SpaResourcesServlet extends HttpServlet {
 	@Override
 	protected long getLastModified(HttpServletRequest req) {
 		File f = getFile(req);
-		
+
 		if (f == null) {
 			return super.getLastModified(req);
 		}
-		
+
 		return f.lastModified();
 	}
-	
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		log.debug("In service method for spa module frontend resource servlet: " + request.getPathInfo());
-		
+
 		File f = getFile(request);
 		if (f == null) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-		
+
 		response.setDateHeader("Last-Modified", f.lastModified());
 		response.setContentLength(Long.valueOf(f.length()).intValue());
-		String mimeType = getServletContext().getMimeType(f.getName());
+		String mimeType = OpenmrsUtil.getFileMimeType(f);
 		response.setContentType(mimeType);
-		
+
 		FileInputStream is = new FileInputStream(f);
 		try {
 			OpenmrsUtil.copyFile(is, response.getOutputStream());
-		}
-		finally {
+		} finally {
 			OpenmrsUtil.closeStream(is);
 		}
 	}
-	
+
 	/**
 	 * Turns the given request/path into a File object
 	 *
@@ -81,12 +80,13 @@ public class SpaResourcesServlet extends HttpServlet {
 	 * @return the file being requested or null if not found
 	 */
 	protected File getFile(HttpServletRequest request) {
-		
+
 		String path = request.getPathInfo(); // all url will have a base of /spa/spaResources/
 		String baseUrl = "/spa/spaResources";
 
-		// we want to extract everything after /spa/spaResources/ from the path info. This should cater for sub-directories
-		String extractedFile = path.substring( path.indexOf('/', baseUrl.length()-1)+1, path.length() );
+		// we want to extract everything after /spa/spaResources/ from the path info.
+		// This should cater for sub-directories
+		String extractedFile = path.substring(path.indexOf('/', baseUrl.length() - 1) + 1, path.length());
 		File folder = SpaModuleUtils.getSpaStaticFilesDir();
 
 		String realPath = folder.getPath();
@@ -98,8 +98,8 @@ public class SpaResourcesServlet extends HttpServlet {
 			log.warn("No file with path '" + realPath + "' exists");
 			return null;
 		}
-		
+
 		return f;
 	}
-	
+
 }
