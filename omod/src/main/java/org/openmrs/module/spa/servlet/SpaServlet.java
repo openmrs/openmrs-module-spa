@@ -34,6 +34,8 @@ public class SpaServlet extends HttpServlet {
 		AdministrationService service = Context.getAdministrationService();
 		String importMapUrl = service.getGlobalProperty(GP_IMPORT_MAP_URL,
 				openmrsBaseUrlContext + "/frontend/import-map.json");
+		String initialScriptUrl = service.getGlobalProperty(GP_INITIAL_SCRIPT_URL,
+				openmrsBaseUrlContext + "/moduleResources/spa/openmrs.js");
 		req.setAttribute("openmrsBaseUrlContext", openmrsBaseUrlContext);
 		req.setAttribute("spaBaseUrlContext",
 				service.getGlobalProperty(GP_KEY_SPA_BASE_URL, DEFAULT_SPA_BASE_URL));
@@ -42,6 +44,7 @@ public class SpaServlet extends HttpServlet {
 		req.setAttribute("spaBodyContentUrl",
 				service.getGlobalProperty(GP_BODY_CONTENT_URL));
 		req.setAttribute("importMapUrl", importMapUrl);
+		req.setAttribute("initialScriptUrl", initialScriptUrl);
 
 		dispatcher.forward(req, resp);
 	}

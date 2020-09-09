@@ -51,6 +51,12 @@
         <description>A custom URL for the import map. Defaults to /[openmrsBase]/frontend/import-map.json</description>
     </globalProperty>
 
+    <globalProperty>
+        <property>spa.initialScriptUrl</property>
+        <defaultValue></defaultValue>
+        <description>A custom URL for the initial script. Defaults to the one packaged with openmrs-module-spa.</description>
+    </globalProperty>
+
     <!-- serve static files for the frontend on /frontend url pattern -->
     <filter>
         <filter-name>sparesourcefilter</filter-name>
