@@ -11,7 +11,7 @@
     <meta name="importmap-type" content="systemjs-importmap">
     <link rel="preload" href="${cookie['import-map-override-url'] == null ? requestScope.importMapUrl : cookie['import-map-override-url'].getValue()}" as="fetch" crossorigin="anonymous" />
     <script type='systemjs-importmap' src="${cookie['import-map-override-url'] == null ? requestScope.importMapUrl : cookie['import-map-override-url'].getValue()}"></script>
-    <script src="${pageContext.request.contextPath}/moduleResources/spa/openmrs.js"></script>
+    <script src="${requestScope.initialScriptUrl}"></script>
     <script>
       initializeSpa({
         openmrsBase: "${requestScope.openmrsBaseUrlContext}",

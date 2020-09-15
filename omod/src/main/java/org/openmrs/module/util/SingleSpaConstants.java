@@ -26,6 +26,8 @@ public final class SingleSpaConstants {
 
 	public static final String GP_IMPORT_MAP_URL = "spa.importMapUrl";
 
+	public static final String GP_INITIAL_SCRIPT_URL = "spa.initialScriptUrl";
+
     private SingleSpaConstants() {
 	}
 
