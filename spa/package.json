@@ -3,9 +3,9 @@
   "private": true,
   "license": "MPL-2.0",
   "scripts": {
-    "build": "cp node_modules/@openmrs/esm-initial-script/dist/openmrs.js* ../omod/src/main/webapp/resources/"
+    "build": "cp node_modules/@openmrs/esm-app-shell/dist/openmrs.js* ../omod/src/main/webapp/resources/"
   },
   "dependencies": {
-    "@openmrs/esm-initial-script": "*"
+    "@openmrs/esm-app-shell": "^0.1.1"
   }
 }
