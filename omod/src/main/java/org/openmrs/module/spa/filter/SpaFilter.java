@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 
-import static org.openmrs.module.util.SingleSpaConstants.DEFAULT_SPA_BASE_URL;
-import static org.openmrs.module.util.SingleSpaConstants.GP_KEY_SPA_BASE_URL;
+import static org.openmrs.module.spa.SpaConstants.DEFAULT_SPA_BASE_URL;
+import static org.openmrs.module.spa.SpaConstants.GP_KEY_SPA_BASE_URL;
 
 public class SpaFilter implements Filter {
 
@@ -61,7 +61,7 @@ public class SpaFilter implements Filter {
 	}
 
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+	public void init(FilterConfig filterConfig) {
 		
 	}
 

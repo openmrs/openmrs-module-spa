@@ -22,18 +22,6 @@
     </globalProperty>
 
     <globalProperty>
-        <property>spa.headContentUrl</property>
-        <defaultValue></defaultValue>
-        <description>Url to fetch content to extend head </description>
-    </globalProperty>
-
-    <globalProperty>
-        <property>spa.bodyContentUrl</property>
-        <defaultValue></defaultValue>
-        <description>Url to fetch content to extend the body </description>
-    </globalProperty>
-
-    <globalProperty>
         <property>spa.frontend.resourceBaseUrl</property>
         <defaultValue>/frontend</defaultValue>
         <description>The base URL from where Single Page Applications static resources are served</description>
@@ -46,17 +34,15 @@
     </globalProperty>
 
     <globalProperty>
-        <property>spa.importMapUrl</property>
-        <defaultValue></defaultValue>
-        <description>A custom URL for the import map. Defaults to /[openmrsBase]/frontend/import-map.json</description>
+        <property>spa.path.frontend.directory</property>
+        <defaultValue>/frontend</defaultValue>
+        <description>A path to frontend assets directory</description>
     </globalProperty>
 
-    <globalProperty>
-        <property>spa.initialScriptUrl</property>
-        <defaultValue></defaultValue>
-        <description>A custom URL for the initial script. Defaults to the one packaged with openmrs-module-spa.</description>
-    </globalProperty>
-
+    <servlet>
+        <servlet-name>spaResources</servlet-name>
+        <servlet-class>org.openmrs.module.spa.servlet.SpaResourcesServlet</servlet-class>
+    </servlet>
     <!-- serve static files for the frontend on /frontend url pattern -->
     <filter>
         <filter-name>sparesourcefilter</filter-name>
@@ -68,17 +54,11 @@
         <url-pattern>/frontend/*</url-pattern>
     </filter-mapping>
 
-
-    <servlet>
-        <servlet-name>spaResources</servlet-name>
-        <servlet-class>org.openmrs.module.spa.servlet.SpaResourcesServlet</servlet-class>
-    </servlet>
-
 	<servlet>
         <servlet-name>spaServlet</servlet-name>
         <servlet-class>org.openmrs.module.spa.servlet.SpaServlet</servlet-class>
     </servlet>
-    
+
 	<filter>
         <filter-name>spaFilter</filter-name>
         <filter-class>org.openmrs.module.spa.filter.SpaFilter</filter-class>
