@@ -11,8 +11,11 @@ package org.openmrs.module.spa.servlet;
 
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.spa.utils.SpaModuleUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,24 +31,32 @@ public class SpaServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		RequestDispatcher dispatcher = req.getRequestDispatcher("/module/spa/master-single-page-application.form");
+		String requestPath = req.getPathInfo();
+		if (requestPath.endsWith(".js") || requestPath.endsWith(".css")) {
+			String spaBasePath = Context.getAdministrationService().getGlobalProperty(GP_KEY_SPA_BASE_URL,
+					DEFAULT_SPA_BASE_URL);
+			String newURL = requestPath.replaceFirst(Pattern.quote(spaBasePath), "/ms/spa/spaResources/");
+			req.getRequestDispatcher(newURL).forward(req, resp);
+			return;
+		}
+		File indexFile = getCustomIndexFile();
+		if (indexFile == null) {
+			RequestDispatcher dispatcher = req.getRequestDispatcher("/module/spa/master-single-page-application.form");
+			dispatcher.forward(req, resp);
+			return;
+		}
+		SpaModuleUtils.serveFile(indexFile, resp, "text/html");
+	}
 
-		String openmrsBaseUrlContext = req.getContextPath();
-		AdministrationService service = Context.getAdministrationService();
-		String importMapUrl = service.getGlobalProperty(GP_IMPORT_MAP_URL,
-				openmrsBaseUrlContext + "/frontend/import-map.json");
-		String initialScriptUrl = service.getGlobalProperty(GP_INITIAL_SCRIPT_URL,
-				openmrsBaseUrlContext + "/moduleResources/spa/openmrs.js");
-		req.setAttribute("openmrsBaseUrlContext", openmrsBaseUrlContext);
-		req.setAttribute("spaBaseUrlContext",
-				service.getGlobalProperty(GP_KEY_SPA_BASE_URL, DEFAULT_SPA_BASE_URL));
-		req.setAttribute("spaHeadContentUrl",
-				service.getGlobalProperty(GP_HEAD_CONTENT_URL));
-		req.setAttribute("spaBodyContentUrl",
-				service.getGlobalProperty(GP_BODY_CONTENT_URL));
-		req.setAttribute("importMapUrl", importMapUrl);
-		req.setAttribute("initialScriptUrl", initialScriptUrl);
+	protected File getCustomIndexFile() {
 
-		dispatcher.forward(req, resp);
+		String indexPath = SpaModuleUtils.getSpaStaticFilesDir().getPath() + "/index.html";
+		indexPath = indexPath.replace("/", File.separator);
+
+		File f = new File(indexPath);
+		if (!f.exists()) {
+			return null;
+		}
+		return f;
 	}
 }

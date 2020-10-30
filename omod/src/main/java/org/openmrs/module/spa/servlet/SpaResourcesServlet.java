@@ -53,25 +53,13 @@ public class SpaResourcesServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		log.debug("In service method for spa module frontend resource servlet: " + request.getPathInfo());
-		
 		File f = getFile(request);
 		if (f == null) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-		
-		response.setDateHeader("Last-Modified", f.lastModified());
-		response.setContentLength(Long.valueOf(f.length()).intValue());
-		String mimeType = getServletContext().getMimeType(f.getName());
-		response.setContentType(mimeType);
-		
-		FileInputStream is = new FileInputStream(f);
-		try {
-			OpenmrsUtil.copyFile(is, response.getOutputStream());
-		}
-		finally {
-			OpenmrsUtil.closeStream(is);
-		}
+		SpaModuleUtils.serveFile(f, response, getServletContext().getMimeType(f.getName()));
+		throw new Error(getServletContext().getMimeType(f.getName()));
 	}
 	
 	/**

@@ -1,10 +1,17 @@
 package org.openmrs.module.spa.utils;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class SpaModuleUtils {
 
@@ -34,5 +41,21 @@ public class SpaModuleUtils {
             folder = new File(OpenmrsUtil.getApplicationDataDirectory(), folderName);
         }
         return folder;
+    }
+
+    public static void serveFile(File file, HttpServletResponse response, String mimeType) throws FileNotFoundException, IOException {
+        Log log = LogFactory.getLog("org.openmrs.module.spa.utils.SpaModuleUtils");
+        response.setDateHeader("Last-Modified", file.lastModified());
+        response.setContentLength(Long.valueOf(file.length()).intValue());
+        response.setContentType(mimeType);
+        log.warn(file.getName() + " -- " + mimeType);
+
+        FileInputStream is = new FileInputStream(file);
+        try {
+            OpenmrsUtil.copyFile(is, response.getOutputStream());
+        }
+        finally {
+            OpenmrsUtil.closeStream(is);
+        }
     }
 }

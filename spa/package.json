@@ -6,6 +6,6 @@
     "build": "openmrs build --target ../omod/src/main/webapp/resources/ --importmap https://spa-modules.nyc3.digitaloceanspaces.com/import-map.json"
   },
   "devDependencies": {
-    "openmrs": "^3.0.0"
+    "openmrs": "^3.0.7"
   }
 }
