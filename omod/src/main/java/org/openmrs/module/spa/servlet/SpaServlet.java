@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.spa.servlet;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.spa.component.ResourceLoaderComponent;
 import org.openmrs.module.spa.utils.SpaModuleUtils;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Slf4j
 public class SpaServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -35,18 +37,19 @@ public class SpaServlet extends HttpServlet {
      */
     @Override
     protected long getLastModified(HttpServletRequest req) {
-        File f = null;
+        File file = null;
         try {
-            f = getResource(req).getFile();
+            file = getResource(req).getFile();
+            log.info("File " + file.getAbsolutePath());
         } catch (IOException e) {
-            e.printStackTrace();
+           log.error("Unable to get the file", e);
         }
 
-        if (f == null) {
+        if (file == null) {
             return super.getLastModified(req);
         }
 
-        return f.lastModified();
+        return file.lastModified();
     }
 
     @Override

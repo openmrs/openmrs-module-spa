@@ -33,7 +33,6 @@ public class SpaModuleUtils {
      * to valid file or directory
      * @return directory for the path specified in the GP
      */
-    @Deprecated
     public static File getSpaStaticFilesDir () {
         AdministrationService as = Context.getAdministrationService();
         String folderName = as.getGlobalProperty(SpaModuleUtils.GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR,
