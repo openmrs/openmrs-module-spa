@@ -85,6 +85,10 @@ public class SpaServlet extends HttpServlet {
          * we want to extract everything after /spa/spaServlet from the path info.
          * This should cater for sub-directories
          */
+        return getResourceLoaderBean().getResource(extractPath(path));
+    }
+
+    public String extractPath(String path) {
         String resourceName = path.substring(path.indexOf('/', BASE_URL.length() - 1) + 1);
 
         String frontedDirectoryPath = SpaModuleUtils.getFrontendDirectoryPath();
@@ -93,12 +97,13 @@ public class SpaServlet extends HttpServlet {
         }
 
         String extractedResourcePath = frontedDirectoryPath + resourceName;
-        ResourceLoaderComponent resourceLoaderComponent = Context
-                .getRegisteredComponent("spaResourceLoader", ResourceLoaderComponent.class);
-
         if (extractedResourcePath.contains("http")) {
             extractedResourcePath = "url:" + extractedResourcePath;
         }
-        return resourceLoaderComponent.getResource(extractedResourcePath);
+        return extractedResourcePath;
+    }
+
+    public ResourceLoaderComponent getResourceLoaderBean() {
+        return Context.getRegisteredComponent("spaResourceLoader", ResourceLoaderComponent.class);
     }
 }

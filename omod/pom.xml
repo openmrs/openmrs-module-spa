@@ -51,6 +51,20 @@
 			<artifactId>lombok</artifactId>
 			<version>1.18.16</version>
 		</dependency>
+
+		<!--tests -->
+		<dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
+			<version>${openMRSVersion}</version>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openmrs.test</groupId>
+			<artifactId>openmrs-test</artifactId>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
