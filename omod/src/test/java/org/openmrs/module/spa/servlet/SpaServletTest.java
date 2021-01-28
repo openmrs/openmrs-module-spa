@@ -65,13 +65,14 @@ public class SpaServletTest extends BaseModuleContextSensitiveTest {
     }
 
     @Test
-    public void shouldReturnResourceExistsFalse() {
+    public void shouldReturnDefaultIndexHtmlForInvalidResource() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getPathInfo()).thenReturn("/index.htm");
 
         Resource resource = servlet.getResource(request);
         Assert.assertNotNull(resource);
-        Assert.assertFalse(resource.exists());
+        Assert.assertTrue(resource.exists());
+        Assert.assertEquals(resource.getFilename(), "index.html");
     }
 
     @Test
