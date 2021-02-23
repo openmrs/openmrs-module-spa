@@ -40,7 +40,7 @@ public class SpaServlet extends HttpServlet {
         File file = null;
         try {
             file = getResource(req).getFile();
-            log.info("File " + file.getAbsolutePath());
+            log.info("File {}", file.getAbsolutePath());
         } catch (IOException e) {
            log.error("Unable to get the file", e);
         }
@@ -91,12 +91,18 @@ public class SpaServlet extends HttpServlet {
     public String extractPath(String path) {
         String resourceName = path.substring(path.indexOf('/', BASE_URL.length() - 1) + 1);
 
+        // Remove the trailing slash
+        if (resourceName.length() > 0 && resourceName.charAt(resourceName.length() - 1) == '/') {
+            resourceName = resourceName.substring(0, resourceName.length() - 1);
+        }
+
         String frontedDirectoryPath = SpaModuleUtils.getFrontendDirectoryPath();
-        if (resourceName.equals("index.htm") || resourceName.isEmpty() || !resourceName.contains(".")) {
+        if (resourceName.endsWith("index.htm") || !resourceName.contains(".")) {
             resourceName = "index.html";
         }
 
         String extractedResourcePath = frontedDirectoryPath + resourceName;
+
         if (extractedResourcePath.contains("http")) {
             extractedResourcePath = "url:" + extractedResourcePath;
         }

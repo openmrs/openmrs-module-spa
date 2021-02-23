@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>spa</artifactId>
-	<version>1.0.9-SNAPSHOT</version>
+	<version>1.0.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Single Page Application</name>
 	<description>The SPA module for OpenMRS</description>
@@ -29,7 +29,6 @@
   	</scm>
 
 	<modules>
-		<module>api</module>
 		<module>omod</module>
 	</modules>
 	
