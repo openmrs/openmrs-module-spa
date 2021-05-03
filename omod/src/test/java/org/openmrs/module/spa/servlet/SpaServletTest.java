@@ -17,7 +17,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.IOException;
 
 import static org.mockito.Mockito.mock;
@@ -26,6 +25,9 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(locations = { "classpath:applicationContext-service.xml",
         "classpath:webModuleApplicationContext.xml"}, inheritLocations = false)
 public class SpaServletTest extends BaseModuleContextSensitiveTest {
+
+    private static final String DEFAULT_REMOTE_URL = "https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/";
+    private static final String PREFIX_REMOTE_URL = "url:" + DEFAULT_REMOTE_URL;
 
     private SpaServlet servlet;
 
@@ -38,18 +40,19 @@ public class SpaServletTest extends BaseModuleContextSensitiveTest {
     public void shouldReturnDefaultResourcePath() {
         String path = "";
 
-        String resultPath = servlet.extractPath(path);
+        String resultPath = servlet.constructRemoteUrl(path);
         Assert.assertNotNull(resultPath);
-        Assert.assertEquals(resultPath, "/frontend/index.html");
+        Assert.assertEquals(resultPath, PREFIX_REMOTE_URL +"index.html");
     }
 
     @Test
     public void shouldExtractValidResourcePath() {
         String path = "openmrs_initialize.html";
 
-        String resultPath = servlet.extractPath(path);
+        String resultPath = servlet.constructRemoteUrl(path);
         Assert.assertNotNull(resultPath);
-        Assert.assertEquals(resultPath, "/frontend/openmrs_initialize.html");
+        Assert.assertTrue(resultPath.startsWith("url:"));
+        Assert.assertEquals(resultPath, PREFIX_REMOTE_URL +"openmrs_initialize.html");
     }
 
     @Test
@@ -57,11 +60,10 @@ public class SpaServletTest extends BaseModuleContextSensitiveTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getPathInfo()).thenReturn("index.html");
 
-        Resource result = servlet.getResource(request);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result.exists());
-        Assert.assertTrue(result.getFile().exists());
-        Assert.assertEquals(result.getFilename(), "index.html");
+        Resource resource = servlet.getResource(request);
+        Assert.assertNotNull(resource);
+        Assert.assertTrue(resource.exists());
+        Assert.assertNotNull(resource.getInputStream());
     }
 
     @Test

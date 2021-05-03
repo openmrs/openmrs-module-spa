@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.spa.servlet;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.spa.component.ResourceLoaderComponent;
@@ -16,10 +17,12 @@ import org.openmrs.module.spa.utils.SpaModuleUtils;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.core.io.Resource;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -35,33 +38,67 @@ public class SpaServlet extends HttpServlet {
      *
      * @see HttpServlet#getLastModified(HttpServletRequest)
      */
+    @SneakyThrows
     @Override
-    protected long getLastModified(HttpServletRequest req) {
-        File file = null;
-        try {
-            file = getResource(req).getFile();
-            log.info("File {}", file.getAbsolutePath());
-        } catch (IOException e) {
-           log.error("Unable to get the file", e);
+    protected long getLastModified(HttpServletRequest servletRequest) {
+        if (SpaModuleUtils.isRemoteAssetsEnabled()){
+            Resource resource = getResource(servletRequest);
+            return resource.lastModified();
+        } else {
+            File file = getFile(servletRequest);
+            if (file == null) {
+                return super.getLastModified(servletRequest);
+            }
+            return file.lastModified();
         }
-
-        if (file == null) {
-            return super.getLastModified(req);
-        }
-
-        return file.lastModified();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        if (SpaModuleUtils.isRemoteAssetsEnabled()) {
+            handleRemoteAssetsDirectory(request, response);
+        } else {
+            handleApplicationDirectoryAssets(request, response);
+        }
+    }
+
+    protected void handleApplicationDirectoryAssets(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        File file = getFile(request);
+
+        if (file == null || !file.exists()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        response.setDateHeader("Last-Modified", file.lastModified());
+        response.setContentLength((int) file.length());
+        String mimeType = getServletContext().getMimeType(file.getName());
+        response.setContentType(mimeType);
+
+        InputStream is = new FileInputStream(file);
+        try {
+            OpenmrsUtil.copyFile(is, response.getOutputStream());
+        } finally {
+            OpenmrsUtil.closeStream(is);
+        }
+    }
+
+    /**
+     * Handles fetching of resources from remotes or those fronted assets which doesn't
+     * resides in the filesystem
+     *
+     * @param request {@link HttpServletRequest}
+     * @param response {@link HttpServletResponse}
+     * @throws IOException {@link IOException} F
+     */
+    protected void handleRemoteAssetsDirectory(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Resource resource = getResource(request);
         if (!resource.exists()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-
         response.setDateHeader("Last-Modified", resource.lastModified());
-        response.setContentLength(Long.valueOf(resource.contentLength()).intValue());
+        response.setContentLength((int) resource.contentLength());
         String mimeType = getServletContext().getMimeType(resource.getFilename());
         response.setContentType(mimeType);
 
@@ -85,10 +122,10 @@ public class SpaServlet extends HttpServlet {
          * we want to extract everything after /spa/spaServlet from the path info.
          * This should cater for sub-directories
          */
-        return getResourceLoaderBean().getResource(extractPath(path));
+        return getResourceLoaderBean().getResource(constructRemoteUrl(path));
     }
 
-    public String extractPath(String path) {
+    protected String constructRemoteUrl(String path) {
         String resourceName = path.substring(path.indexOf('/', BASE_URL.length() - 1) + 1);
 
         // Remove the trailing slash
@@ -96,20 +133,47 @@ public class SpaServlet extends HttpServlet {
             resourceName = resourceName.substring(0, resourceName.length() - 1);
         }
 
-        String frontedDirectoryPath = SpaModuleUtils.getFrontendDirectoryPath();
+        String frontedAssetsDirectoryPath = SpaModuleUtils.getRemoteAssetsUrl();
+        log.info("Serving assets from {}", frontedAssetsDirectoryPath);
         if (resourceName.endsWith("index.htm") || !resourceName.contains(".")) {
             resourceName = "index.html";
         }
 
-        String extractedResourcePath = frontedDirectoryPath + resourceName;
-
-        if (extractedResourcePath.contains("http")) {
+        String extractedResourcePath = frontedAssetsDirectoryPath + resourceName;
+        if (extractedResourcePath.contains("http") && !extractedResourcePath.contains("url:")) {
             extractedResourcePath = "url:" + extractedResourcePath;
         }
+        log.info("Frontend asset {}", extractedResourcePath);
         return extractedResourcePath;
     }
 
-    public ResourceLoaderComponent getResourceLoaderBean() {
+    protected ResourceLoaderComponent getResourceLoaderBean() {
         return Context.getRegisteredComponent("spaResourceLoader", ResourceLoaderComponent.class);
     }
+
+    protected File getFile(HttpServletRequest request) {
+        // all url will have a base of /spa/spaResources/
+        String path = request.getPathInfo();
+
+        // we want to extract everything after /spa/spaResources/ from the path info. This should cater for sub-directories
+        String extractedFile = path.substring(path.indexOf('/', BASE_URL.length() - 1) + 1);
+        File folder = SpaModuleUtils.getSpaStaticFilesDir();
+
+        //Resolve default index.html
+        if (extractedFile.endsWith("index.htm") || !extractedFile.contains(".")) {
+            extractedFile = "index.html";
+        }
+
+        String realPath = folder.getPath();
+        realPath += "/" + extractedFile;
+        realPath = realPath.replace("/", File.separator);
+
+        File file = new File(realPath);
+        if (!file.exists()) {
+            log.warn("File with path '" + realPath + "' doesn't exists");
+            return null;
+        }
+        return file;
+    }
+
 }

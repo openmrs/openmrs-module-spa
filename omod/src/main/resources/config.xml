@@ -34,25 +34,16 @@
     </globalProperty>
 
     <globalProperty>
-        <property>spa.path.frontend.directory</property>
-        <defaultValue>/frontend</defaultValue>
-        <description>A path to frontend assets directory</description>
+        <property>spa.remote.assets.url</property>
+        <defaultValue>https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/</defaultValue>
+        <description>An URL to frontend assets</description>
     </globalProperty>
 
-    <servlet>
-        <servlet-name>spaResources</servlet-name>
-        <servlet-class>org.openmrs.module.spa.servlet.SpaResourcesServlet</servlet-class>
-    </servlet>
-    <!-- serve static files for the frontend on /frontend url pattern -->
-    <filter>
-        <filter-name>sparesourcefilter</filter-name>
-        <servlet-name>spaResources</servlet-name>
-        <filter-class>org.openmrs.module.spa.filter.SpaResourcesFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>sparesourcefilter</filter-name>
-        <url-pattern>/frontend/*</url-pattern>
-    </filter-mapping>
+    <globalProperty>
+        <property>spa.remote.assets.enabled</property>
+        <defaultValue>false</defaultValue>
+        <description>Enable fetching of frontend assets from remote/filesystem sources (basic any directory)</description>
+    </globalProperty>
 
 	<servlet>
         <servlet-name>spaServlet</servlet-name>
