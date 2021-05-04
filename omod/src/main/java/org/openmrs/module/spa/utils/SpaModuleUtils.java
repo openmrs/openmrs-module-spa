@@ -18,8 +18,8 @@ import org.openmrs.util.OpenmrsUtil;
 import java.io.File;
 
 import static org.openmrs.module.spa.SpaConstants.DEFAULT_FRONTEND_DIRECTORY;
-import static org.openmrs.module.spa.SpaConstants.GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR;
-import static org.openmrs.module.spa.SpaConstants.GP_IS_REMOTE_ASSETS_ENABLED;
+import static org.openmrs.module.spa.SpaConstants.GP_LOCAL_DIRECTORY;
+import static org.openmrs.module.spa.SpaConstants.GP_IS_REMOTE_ENABLED;
 
 @Slf4j
 public class SpaModuleUtils {
@@ -35,7 +35,7 @@ public class SpaModuleUtils {
      */
     public static File getSpaStaticFilesDir () {
         AdministrationService as = Context.getAdministrationService();
-        String folderName = as.getGlobalProperty(GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR,
+        String folderName = as.getGlobalProperty(GP_LOCAL_DIRECTORY,
                 DEFAULT_FRONTEND_DIRECTORY);
 
         // try to load the repository folder straight away.
@@ -51,7 +51,7 @@ public class SpaModuleUtils {
 
     public static boolean isRemoteAssetsEnabled() {
         AdministrationService administrationService = Context.getAdministrationService();
-        String isRemoteAssetEnabled = administrationService.getGlobalProperty(GP_IS_REMOTE_ASSETS_ENABLED, "false");
+        String isRemoteAssetEnabled = administrationService.getGlobalProperty(GP_IS_REMOTE_ENABLED, "false");
         log.info("Remote/Local frontend assets enabled {}", isRemoteAssetEnabled);
         return Boolean.parseBoolean(isRemoteAssetEnabled);
     }
@@ -62,7 +62,7 @@ public class SpaModuleUtils {
     public static String getRemoteAssetsUrl() {
         AdministrationService administrationService = Context.getAdministrationService();
         //Defaults to SPA environment at least for now.
-        String path = administrationService.getGlobalProperty(SpaConstants.GP_REMOTE_ASSETS_URL,
+        String path = administrationService.getGlobalProperty(SpaConstants.GP_REMOTE_URL,
                 "https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/");
 
         if (!path.endsWith("/")) {

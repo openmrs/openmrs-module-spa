@@ -56,13 +56,13 @@ public class SpaServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (SpaModuleUtils.isRemoteAssetsEnabled()) {
-            handleRemoteAssetsDirectory(request, response);
+            handleRemoteAssets(request, response);
         } else {
-            handleApplicationDirectoryAssets(request, response);
+            handleLocalAssets(request, response);
         }
     }
 
-    protected void handleApplicationDirectoryAssets(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void handleLocalAssets(HttpServletRequest request, HttpServletResponse response) throws IOException {
         File file = getFile(request);
 
         if (file == null || !file.exists()) {
@@ -91,7 +91,7 @@ public class SpaServlet extends HttpServlet {
      * @param response {@link HttpServletResponse}
      * @throws IOException {@link IOException} F
      */
-    protected void handleRemoteAssetsDirectory(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void handleRemoteAssets(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Resource resource = getResource(request);
         if (!resource.exists()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);

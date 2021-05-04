@@ -18,31 +18,25 @@
 	<globalProperty>
         <property>spa.baseUrl</property>
         <defaultValue>/spa</defaultValue>
-        <description>The base URL from where Single Page Applications are served</description>
+        <description>The base URL or path at which to serve the Frontend 3.0 application</description>
     </globalProperty>
 
     <globalProperty>
-        <property>spa.frontend.resourceBaseUrl</property>
-        <defaultValue>/frontend</defaultValue>
-        <description>The base URL from where Single Page Applications static resources are served</description>
-    </globalProperty>
-
-    <globalProperty>
-        <property>spa.frontend.directory</property>
+        <property>spa.local.directory</property>
         <defaultValue>frontend</defaultValue>
-        <description>The directory that holds static files for the single-spa</description>
+        <description>The directory containing the Frontend 3.0 application's `index.html`. Can be an absolute path, or relative to the application data directory. Only used if `spa.remote.enabled` is false.</description>
     </globalProperty>
 
     <globalProperty>
-        <property>spa.remote.assets.url</property>
-        <defaultValue>https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/</defaultValue>
-        <description>An URL to frontend assets</description>
-    </globalProperty>
-
-    <globalProperty>
-        <property>spa.remote.assets.enabled</property>
+        <property>spa.remote.enabled</property>
         <defaultValue>false</defaultValue>
-        <description>Enable fetching of frontend assets from remote/filesystem sources (basic any directory)</description>
+        <description>If enabled, serves from `spa.remote.url` instead of `spa.local.directory`</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>spa.remote.url</property>
+        <defaultValue>https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/</defaultValue>
+        <description>The URL of the Frontend 3.0 application files. Only used if `spa.remote.enabled` is true.</description>
     </globalProperty>
 
 	<servlet>

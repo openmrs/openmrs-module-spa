@@ -23,14 +23,10 @@ public final class SpaConstants {
 
 	public static final String DEFAULT_FRONTEND_DIRECTORY = "frontend";
 
-	public static final String GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR = "spa.frontend.directory";
+	public static final String GP_LOCAL_DIRECTORY = "spa.local.directory";
 
-	public static final String GLOBAL_PROPERTY_FRONTEND_RESOURCE_BASE_URL = "spa.frontend.resourceBaseUrl";
+	public static final String GP_IS_REMOTE_ENABLED = "spa.remote.enabled";
 
-	public static final String DEFAULT_FRONTEND_RESOURCE_BASE_URL = "/frontend";
-
-	public static final String GP_IS_REMOTE_ASSETS_ENABLED = "spa.remote.assets.enabled";
-
-	public static final String GP_REMOTE_ASSETS_URL = "spa.remote.assets.url";
+	public static final String GP_REMOTE_URL = "spa.remote.url";
 }
 
