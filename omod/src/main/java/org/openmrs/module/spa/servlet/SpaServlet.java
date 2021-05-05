@@ -161,10 +161,7 @@ public class SpaServlet extends HttpServlet {
             extractedFile = "index.html";
         }
 
-        String realPath = folder.getPath();
-        realPath += "/" + extractedFile;
-        realPath = realPath.replace("/", File.separator);
-
+        File file = folder.toPath().resolve(extractedFile).toFile();
         File file = new File(realPath);
         if (!file.exists()) {
             log.warn("File with path '" + realPath + "' doesn't exists");
