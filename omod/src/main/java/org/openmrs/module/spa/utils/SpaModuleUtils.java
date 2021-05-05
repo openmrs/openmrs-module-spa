@@ -35,8 +35,7 @@ public class SpaModuleUtils {
      */
     public static File getSpaStaticFilesDir () {
         AdministrationService as = Context.getAdministrationService();
-        String folderName = as.getGlobalProperty(GP_LOCAL_DIRECTORY,
-                DEFAULT_FRONTEND_DIRECTORY);
+        String folderName = as.getGlobalProperty(GP_LOCAL_DIRECTORY, DEFAULT_FRONTEND_DIRECTORY);
 
         // try to load the repository folder straight away.
         File folder = new File(folderName);
