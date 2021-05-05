@@ -60,7 +60,7 @@ public class SpaModuleUtils {
      */
     public static String getRemoteAssetsUrl() {
         AdministrationService administrationService = Context.getAdministrationService();
-        //Defaults to SPA environment at least for now.
+        // Defaults to the resources used by the SPA Staging server. Should be updated once there's a more stable environment.
         String path = administrationService.getGlobalProperty(SpaConstants.GP_REMOTE_URL,
                 "https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/");
 
