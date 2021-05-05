@@ -164,7 +164,7 @@ public class SpaServlet extends HttpServlet {
         File file = folder.toPath().resolve(extractedFile).toFile();
         File file = new File(realPath);
         if (!file.exists()) {
-            log.warn("File with path '" + realPath + "' doesn't exists");
+            log.warn("File with path '{}' doesn't exist", file.toString());
             return null;
         }
         return file;
