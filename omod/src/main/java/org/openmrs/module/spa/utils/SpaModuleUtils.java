@@ -65,7 +65,7 @@ public class SpaModuleUtils {
                 "https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/");
 
         if (!path.endsWith("/")) {
-            path = String.format("%s/", path);
+            path = path + "/";
         }
 
         return path;

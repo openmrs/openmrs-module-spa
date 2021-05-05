@@ -15,7 +15,7 @@ package org.openmrs.module.spa;
  */
 public final class SpaConstants {
 
-	SpaConstants() {}
+	private SpaConstants() {}
 
     public static final String DEFAULT_SPA_BASE_URL = "/spa";
 	
