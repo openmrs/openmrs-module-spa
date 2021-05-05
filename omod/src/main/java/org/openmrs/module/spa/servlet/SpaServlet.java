@@ -75,11 +75,8 @@ public class SpaServlet extends HttpServlet {
         String mimeType = getServletContext().getMimeType(file.getName());
         response.setContentType(mimeType);
 
-        InputStream is = new FileInputStream(file);
-        try {
+        try (InputStream is = new FileInputStream(file)) {
             OpenmrsUtil.copyFile(is, response.getOutputStream());
-        } finally {
-            OpenmrsUtil.closeStream(is);
         }
     }
 
