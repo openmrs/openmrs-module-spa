@@ -28,7 +28,6 @@ import static org.openmrs.module.spa.SpaConstants.GP_KEY_SPA_BASE_URL;
 
 public class SpaFilter implements Filter {
 
-	
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 		

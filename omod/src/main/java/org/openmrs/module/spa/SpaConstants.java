@@ -15,14 +15,18 @@ package org.openmrs.module.spa;
  */
 public final class SpaConstants {
 
+	private SpaConstants() {}
+
     public static final String DEFAULT_SPA_BASE_URL = "/spa";
 	
 	public static final String GP_KEY_SPA_BASE_URL = "spa.baseUrl";
 
-	public static final String FRONTEND_DIRECTORY_PATH = "spa.path.frontend.directory";
+	public static final String DEFAULT_FRONTEND_DIRECTORY = "frontend";
 
-    private SpaConstants() {
-	}
+	public static final String GP_LOCAL_DIRECTORY = "spa.local.directory";
 
+	public static final String GP_IS_REMOTE_ENABLED = "spa.remote.enabled";
+
+	public static final String GP_REMOTE_URL = "spa.remote.url";
 }
 

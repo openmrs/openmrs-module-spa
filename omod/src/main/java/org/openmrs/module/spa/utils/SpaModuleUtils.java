@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.spa.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.spa.SpaConstants;
@@ -16,15 +17,14 @@ import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
 
+import static org.openmrs.module.spa.SpaConstants.DEFAULT_FRONTEND_DIRECTORY;
+import static org.openmrs.module.spa.SpaConstants.GP_LOCAL_DIRECTORY;
+import static org.openmrs.module.spa.SpaConstants.GP_IS_REMOTE_ENABLED;
+
+@Slf4j
 public class SpaModuleUtils {
 
-    public static final String DEFAULT_FRONTEND_DIRECTORY = "frontend";
-
-    public static final String GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR = "spa.frontend.directory";
-
-    public static final String GLOBAL_PROPERTY_FRONTEND_RESOURCE_BASE_URL = "spa.frontend.resourceBaseUrl";
-
-    public static final String DEFAULT_FRONTEND_RESOURCE_BASE_URL = "/frontend";
+    SpaModuleUtils() {}
 
     /**
      * Reads the value of GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR
@@ -35,8 +35,7 @@ public class SpaModuleUtils {
      */
     public static File getSpaStaticFilesDir () {
         AdministrationService as = Context.getAdministrationService();
-        String folderName = as.getGlobalProperty(SpaModuleUtils.GLOBAL_PROPERTY_SPA_STATIC_FILES_DIR,
-                SpaModuleUtils.DEFAULT_FRONTEND_DIRECTORY);
+        String folderName = as.getGlobalProperty(GP_LOCAL_DIRECTORY, DEFAULT_FRONTEND_DIRECTORY);
 
         // try to load the repository folder straight away.
         File folder = new File(folderName);
@@ -49,12 +48,21 @@ public class SpaModuleUtils {
         return folder;
     }
 
+    public static boolean isRemoteAssetsEnabled() {
+        AdministrationService administrationService = Context.getAdministrationService();
+        String isRemoteAssetEnabled = administrationService.getGlobalProperty(GP_IS_REMOTE_ENABLED, "false");
+        log.info("Remote/Local frontend assets enabled {}", isRemoteAssetEnabled);
+        return Boolean.parseBoolean(isRemoteAssetEnabled);
+    }
+
     /*
      * This should take care for File system, Class path, and URL path
      */
-    public static String getFrontendDirectoryPath() {
+    public static String getRemoteAssetsUrl() {
         AdministrationService administrationService = Context.getAdministrationService();
-        String path = administrationService.getGlobalProperty(SpaConstants.FRONTEND_DIRECTORY_PATH, "/frontend");
+        // Defaults to the resources used by the SPA Staging server. Should be updated once there's a more stable environment.
+        String path = administrationService.getGlobalProperty(SpaConstants.GP_REMOTE_URL,
+                "https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/");
 
         if (!path.endsWith("/")) {
             path = path + "/";
