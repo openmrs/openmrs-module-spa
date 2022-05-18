@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.spa.servlet;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -17,17 +16,22 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(locations = { "classpath:applicationContext-service.xml",
+@ContextConfiguration(locations = {"classpath:applicationContext-service.xml",
         "classpath:webModuleApplicationContext.xml"}, inheritLocations = false)
 public class SpaServletTest extends BaseModuleContextSensitiveTest {
 
-    private static final String DEFAULT_REMOTE_URL = "https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/";
+    //Just a placeholder url for testing, we don't make an actual request
+    private static final String DEFAULT_REMOTE_URL = "https://dev3.openmrs.org/openmrs/spa/@openmrs/esm-app-shell/latest/";
     private static final String PREFIX_REMOTE_URL = "url:" + DEFAULT_REMOTE_URL;
+
+    private static final String INDEX_HTML = "index.html";
 
     private SpaServlet servlet;
 
@@ -41,44 +45,54 @@ public class SpaServletTest extends BaseModuleContextSensitiveTest {
         String path = "";
 
         String resultPath = servlet.constructRemoteUrl(path);
-        Assert.assertNotNull(resultPath);
-        Assert.assertEquals(resultPath, PREFIX_REMOTE_URL +"index.html");
+        assertNotNull(resultPath);
+        assertEquals(resultPath, PREFIX_REMOTE_URL + "index.html");
     }
 
     @Test
     public void shouldExtractValidResourcePath() {
-        String path = "openmrs_initialize.html";
+        String path = "manifest-build.html";
 
         String resultPath = servlet.constructRemoteUrl(path);
-        Assert.assertNotNull(resultPath);
-        Assert.assertTrue(resultPath.startsWith("url:"));
-        Assert.assertEquals(resultPath, PREFIX_REMOTE_URL +"openmrs_initialize.html");
+        assertNotNull(resultPath);
+        assertTrue(resultPath.startsWith("url:"));
+        assertEquals(resultPath, PREFIX_REMOTE_URL + path);
     }
 
     @Test
-    public void shouldReturnValidResource() throws IOException {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getPathInfo()).thenReturn("index.html");
+    public void shouldReturnValidResource() {
+        SpaServlet spaServlet = mock(SpaServlet.class);
+        Resource resourceMock = mock(Resource.class);
+        HttpServletRequest requestMock = mock(HttpServletRequest.class);
 
-        Resource resource = servlet.getResource(request);
-        Assert.assertNotNull(resource);
-        Assert.assertTrue(resource.exists());
-        Assert.assertNotNull(resource.getInputStream());
+        when(requestMock.getPathInfo()).thenReturn(INDEX_HTML);
+        when(resourceMock.exists()).thenReturn(true);
+        when(spaServlet.getResource(requestMock)).thenReturn(resourceMock);
+
+        Resource resource = spaServlet.getResource(requestMock);
+        assertNotNull(resource);
+        assertTrue(resource.exists());
     }
 
     @Test
     public void shouldReturnDefaultIndexHtmlForInvalidResource() {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getPathInfo()).thenReturn("/index.htm");
+        SpaServlet spaServlet = mock(SpaServlet.class);
+        Resource resourceMock = mock(Resource.class);
 
-        Resource resource = servlet.getResource(request);
-        Assert.assertNotNull(resource);
-        Assert.assertTrue(resource.exists());
-        Assert.assertEquals(resource.getFilename(), "index.html");
+        when(request.getPathInfo()).thenReturn(INDEX_HTML);
+        when(resourceMock.exists()).thenReturn(true);
+        when(resourceMock.getFilename()).thenReturn(INDEX_HTML);
+        when(spaServlet.getResource(request)).thenReturn(resourceMock);
+
+        Resource resource = spaServlet.getResource(request);
+        assertNotNull(resource);
+        assertTrue(resource.exists());
+        assertEquals(resource.getFilename(), INDEX_HTML);
     }
 
     @Test
     public void shouldReturnResourceLoaderBean() {
-        Assert.assertNotNull(servlet.getResourceLoaderBean());
+        assertNotNull(servlet.getResourceLoaderBean());
     }
 }
