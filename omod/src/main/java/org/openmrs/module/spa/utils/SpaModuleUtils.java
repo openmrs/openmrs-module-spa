@@ -60,9 +60,9 @@ public class SpaModuleUtils {
      */
     public static String getRemoteAssetsUrl() {
         AdministrationService administrationService = Context.getAdministrationService();
-        // Defaults to the resources used by the SPA Staging server. Should be updated once there's a more stable environment.
+        // Defaults to the resources used by the dev3 Staging server. Should be updated once there's a more stable environment.
         String path = administrationService.getGlobalProperty(SpaConstants.GP_REMOTE_URL,
-                "https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/");
+                "https://dev3.openmrs.org/openmrs/spa/@openmrs/esm-app-shell/latest/");
 
         if (!path.endsWith("/")) {
             path = path + "/";
