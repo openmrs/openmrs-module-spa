@@ -71,6 +71,7 @@ public class SpaServlet extends HttpServlet {
         }
 
         response.setDateHeader("Last-Modified", file.lastModified());
+        addCacheControlHeader(request, response);
         response.setContentLength((int) file.length());
         String mimeType = getServletContext().getMimeType(file.getName());
         response.setContentType(mimeType);
@@ -95,6 +96,7 @@ public class SpaServlet extends HttpServlet {
             return;
         }
         response.setDateHeader("Last-Modified", resource.lastModified());
+        addCacheControlHeader(request, response);
         response.setContentLength((int) resource.contentLength());
         String mimeType = getServletContext().getMimeType(resource.getFilename());
         response.setContentType(mimeType);
@@ -167,6 +169,13 @@ public class SpaServlet extends HttpServlet {
             return null;
         }
         return file;
+    }
+
+    private void addCacheControlHeader(HttpServletRequest request, HttpServletResponse response) {
+        String path = request.getPathInfo();
+        if (path.endsWith("importmap.json") || path.endsWith("import-map.json")) {
+            response.setHeader("Cache-Control", "public, must-revalidate, max-age=0;");
+        }
     }
 
 }
