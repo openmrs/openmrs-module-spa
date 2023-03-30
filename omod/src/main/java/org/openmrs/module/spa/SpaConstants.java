@@ -28,5 +28,6 @@ public final class SpaConstants {
 	public static final String GP_IS_REMOTE_ENABLED = "spa.remote.enabled";
 
 	public static final String GP_REMOTE_URL = "spa.remote.url";
+
 }
 

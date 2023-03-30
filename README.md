@@ -17,8 +17,9 @@ cd openmrs-module-spa && mvn clean install
 ```
 
 ## Configurations
-| Property      | Description | Default Value |
-| ----------- | ----------- | ------------ |
-|   `spa.local.directory`   | The directory containing the Frontend 3.0 application's `index.html`. Can be an absolute path, or relative to the application data directory. Only used if `spa.remote.enabled` is false.  | frontend |
-| `spa.remote.enabled` | If enabled, serves from `spa.remote.url` instead of `spa.local.directory` | false |
-| `spa.remote.url` | The URL of the Frontend 3.0 application files. Only used if `spa.remote.enabled` is true. | https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/ |
+| Property                   | Description                                                                                                                                                                               | Default Value                                                                  |
+|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| `spa.local.directory`      | The directory containing the Frontend 3.0 application's `index.html`. Can be an absolute path, or relative to the application data directory. Only used if `spa.remote.enabled` is false. | frontend                                                                       |
+| `spa.remote.enabled`       | If enabled, serves from `spa.remote.url` instead of `spa.local.directory`                                                                                                                 | false                                                                          |
+| `spa.remote.url`           | The URL of the Frontend 3.0 application files. Only used if `spa.remote.enabled` is true.                                                                                                 | https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/ |
+
