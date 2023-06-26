@@ -29,9 +29,6 @@ public class SpaWebComponentRegistrar implements ServletContextAware {
     public void setServletContext(ServletContext servletContext) {
 
         try {
-            ServletRegistration openmrsServletReg = servletContext.getServletRegistration("openmrs");
-            openmrsServletReg.addMapping("/ws/frontend/*");
-
             ServletRegistration servletReg = servletContext.addServlet("spaServlet", new SpaServlet());
             servletReg.addMapping("/ws/frontend/config.json");
 
