@@ -77,23 +77,20 @@ public class SpaServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestURI = request.getRequestURI();
-        if (requestURI.endsWith("/config.json")) {
-            if (!Context.isAuthenticated()) {
-                String basicAuth = request.getHeader("Authorization");
-                if (basicAuth != null) {
-                    // check that header is in format "Basic ${base64encode(username + ":" + password)}"
-                    if (isValidAuthFormat(response, basicAuth)) return;
-                }
-            }
-
-            User user = Context.getAuthenticatedUser();
-            if (user != null && user.isSuperUser()) {
-                saveJsonConfigFile(request, response);
-            } else {
-                log.error("Authorisation error while creating a config.json file");
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            }
+        if (!requestURI.endsWith("/config.json")) {
+            return;
         }
+        String basicAuth = !Context.isAuthenticated() ? request.getHeader("Authorization") : null;
+        if (basicAuth != null && isValidAuthFormat(response, basicAuth)) {
+            return;
+        }
+        User user = Context.getAuthenticatedUser();
+        if (user == null || !user.isSuperUser()) {
+            log.error("Authorization error while creating a config.json file");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        saveJsonConfigFile(request, response);
     }
 
     private void saveJsonConfigFile(HttpServletRequest request, HttpServletResponse response) throws IOException {

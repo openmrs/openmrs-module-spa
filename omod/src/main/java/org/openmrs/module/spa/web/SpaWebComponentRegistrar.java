@@ -9,16 +9,10 @@
  */
 package org.openmrs.module.spa.web;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration.Dynamic;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
-import java.util.EnumSet;
 
-import org.directwebremoting.servlet.EfficientShutdownServletContextAttributeListener;
-import org.openmrs.module.spa.filter.SpaFilter;
 import org.openmrs.module.spa.servlet.SpaServlet;
-import org.openmrs.web.SessionListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
@@ -31,9 +25,6 @@ public class SpaWebComponentRegistrar implements ServletContextAware {
         try {
             ServletRegistration servletReg = servletContext.addServlet("spaServlet", new SpaServlet());
             servletReg.addMapping("/ws/frontend/config.json");
-
-            Dynamic filter = servletContext.addFilter("spaFilter", new SpaFilter());
-            filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/ws/frontend/config.json");
         }
         catch (Exception ex) {
             //TODO need a work around for: java.lang.IllegalStateException: Started
