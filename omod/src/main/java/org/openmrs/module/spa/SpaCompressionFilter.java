@@ -11,6 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * This uses OpenMRS core's GZip implementation, but without requiring any configuration. It should be ok to gzip anything
+ * returned from this module, so we just do.
+ */
 public class SpaCompressionFilter extends OncePerRequestFilter {
 
     @Override

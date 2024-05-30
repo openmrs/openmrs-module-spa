@@ -17,6 +17,7 @@ import org.openmrs.module.BaseModuleActivator;
 @Slf4j
 public class SpaActivator extends BaseModuleActivator {
 
+	// here so we can register the listener on load and de-register it when stopped
 	private GlobalPropertyListener spaDirectoryResolver = null;
 
 	@Override

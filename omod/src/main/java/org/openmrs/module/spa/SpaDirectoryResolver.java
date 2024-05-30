@@ -13,6 +13,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.openmrs.module.spa.SpaConstants.DEFAULT_FRONTEND_DIRECTORY;
 import static org.openmrs.module.spa.SpaConstants.GP_LOCAL_DIRECTORY;
 
+/**
+ * This is a GlobalPropertyListener that just listens for the spa.local.directory property and, when it changes,
+ * resolves it to a physcial directory.
+ */
 @Slf4j
 public class SpaDirectoryResolver implements GlobalPropertyListener {
 

@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 
 /**
  * This is a resource loader for files served by the {@link SpaController}. It is modelled on Spring's
- * {@link FileSystemContextResource}, but uses absolute paths. Safety checks for where the SPA is served from are handled
- * by the {@link SpaDirectoryResolver} directly.
+ * {@link FileSystemContextResource}, but uses absolute paths and only checks the SPA directory. Safety checks for
+ * where the SPA is served from are handled by the {@link SpaDirectoryResolver} directly.
  */
 public class SpaResourceLoader extends DefaultResourceLoader {
 

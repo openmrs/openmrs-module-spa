@@ -18,6 +18,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Spring's built-in converters did not seem to properly support all the MIME-types we need, so we have this basic
+ * version of a MessageConverter. It should work for arbitrary Spring resources, but we limit it to those from this
+ * module.
+ */
 public class SpaResourceConverter extends AbstractHttpMessageConverter<Resource> {
 
     protected SpaResourceConverter() {

@@ -17,8 +17,6 @@ public final class SpaConstants {
 
 	private SpaConstants() {}
 
-    public static final String SPA_BASE_URL = "/spa";
-
 	public static final String DEFAULT_FRONTEND_DIRECTORY = "frontend";
 
 	public static final String GP_LOCAL_DIRECTORY = "spa.local.directory";
