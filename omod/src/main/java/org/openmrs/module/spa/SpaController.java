@@ -49,7 +49,7 @@ public class SpaController {
     public ResponseEntity<Resource> getStaticFileWithoutCacheHeaders(@PathVariable String filename) {
         FileSystemResource resource = (FileSystemResource) resourceLoader.getResource("/" + filename);
         if (resource.exists()) {
-            MediaType mediaType = filename.equalsIgnoreCase("service-worker") ? MediaType.parseMediaType("text/javascript") : MediaType.APPLICATION_JSON;
+            MediaType mediaType = filename.endsWith(".js") ? MediaType.parseMediaType("text/javascript") : MediaType.APPLICATION_JSON;
 
             return ResponseEntity.ok()
                     .cacheControl(CacheControl.noCache().mustRevalidate())
