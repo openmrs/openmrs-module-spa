@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<module configVersion="1.2">
-
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN"
+		"https://resources.openmrs.org/doctype/config-1.6.dtd">
+<module configVersion="1.6">
 	<id>${project.parent.artifactId}</id>
 	<name>${project.parent.name}</name>
 	<version>${project.parent.version}</version>
@@ -15,42 +16,34 @@
 
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.SpaActivator</activator>
 
-	<globalProperty>
-        <property>spa.baseUrl</property>
-        <defaultValue>/spa</defaultValue>
-        <description>The base URL or path at which to serve the Frontend 3.0 application</description>
-    </globalProperty>
-
     <globalProperty>
         <property>spa.local.directory</property>
         <defaultValue>frontend</defaultValue>
-        <description>The directory containing the Frontend 3.0 application's `index.html`. Can be an absolute path, or relative to the application data directory. Only used if `spa.remote.enabled` is false.</description>
+        <description>The directory containing the Frontend 3.0 application's `index.html`. Can be an absolute path, or relative to the application data directory.</description>
     </globalProperty>
-
-    <globalProperty>
-        <property>spa.remote.enabled</property>
-        <defaultValue>false</defaultValue>
-        <description>If enabled, serves from `spa.remote.url` instead of `spa.local.directory`</description>
-    </globalProperty>
-
-    <globalProperty>
-        <property>spa.remote.url</property>
-        <defaultValue>https://spa-modules.nyc3.digitaloceanspaces.com/@openmrs/esm-app-shell/latest/</defaultValue>
-        <description>The URL of the Frontend 3.0 application files. Only used if `spa.remote.enabled` is true.</description>
-    </globalProperty>
-
-	<servlet>
-        <servlet-name>spaServlet</servlet-name>
-        <servlet-class>org.openmrs.module.spa.servlet.SpaServlet</servlet-class>
-    </servlet>
 
 	<filter>
-        <filter-name>spaFilter</filter-name>
-        <filter-class>org.openmrs.module.spa.filter.SpaFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>spaFilter</filter-name>
-        <url-pattern>*</url-pattern>
-    </filter-mapping>
-    
+		<filter-name>spaEtagFilter</filter-name>
+		<filter-class>org.springframework.web.filter.ShallowEtagHeaderFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>spaEtagFilter</filter-name>
+		<url-pattern>/spa/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>spaCompressionFilter</filter-name>
+		<filter-class>org.openmrs.module.spa.SpaCompressionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>spaCompressionFilter</filter-name>
+		<url-pattern>/spa/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>spaFilter</filter-name>
+		<filter-class>org.openmrs.module.spa.SpaFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>spaFilter</filter-name>
+		<url-pattern>/spa/*</url-pattern>
+	</filter-mapping>
 </module>
