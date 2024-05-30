@@ -15,7 +15,7 @@ import static org.openmrs.module.spa.SpaConstants.GP_LOCAL_DIRECTORY;
 
 /**
  * This is a GlobalPropertyListener that just listens for the spa.local.directory property and, when it changes,
- * resolves it to a physcial directory.
+ * resolves it to a physical directory.
  */
 @Slf4j
 public class SpaDirectoryResolver implements GlobalPropertyListener {
@@ -23,7 +23,20 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
     private static final AtomicReference<String> spaDirectory = new AtomicReference<>();
 
     public SpaDirectoryResolver() {
-        resolveDirectory(Context.getAdministrationService().getGlobalProperty(GP_LOCAL_DIRECTORY, DEFAULT_FRONTEND_DIRECTORY));
+        String localDirectory = Context.getAdministrationService().getGlobalProperty(GP_LOCAL_DIRECTORY);
+        if (localDirectory == null) {
+            localDirectory = Context.getRuntimeProperties().getProperty(GP_LOCAL_DIRECTORY);
+
+            if (localDirectory == null) {
+                localDirectory = System.getProperty(GP_LOCAL_DIRECTORY);
+
+                if (localDirectory == null) {
+                    localDirectory = DEFAULT_FRONTEND_DIRECTORY;
+                }
+            }
+        }
+
+        resolveDirectory(localDirectory);
     }
 
     @Override
