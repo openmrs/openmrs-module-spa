@@ -23,20 +23,7 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
     private static final AtomicReference<String> spaDirectory = new AtomicReference<>();
 
     public SpaDirectoryResolver() {
-        String localDirectory = Context.getAdministrationService().getGlobalProperty(GP_LOCAL_DIRECTORY);
-        if (localDirectory == null) {
-            localDirectory = Context.getRuntimeProperties().getProperty(GP_LOCAL_DIRECTORY);
-
-            if (localDirectory == null) {
-                localDirectory = System.getProperty(GP_LOCAL_DIRECTORY);
-
-                if (localDirectory == null) {
-                    localDirectory = DEFAULT_FRONTEND_DIRECTORY;
-                }
-            }
-        }
-
-        resolveDirectory(localDirectory);
+        resolveDirectory(getDirectoryFromSettings());
     }
 
     @Override
@@ -51,11 +38,28 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
 
     @Override
     public void globalPropertyDeleted(String property) {
-        resolveDirectory(DEFAULT_FRONTEND_DIRECTORY);
+        resolveDirectory(getDirectoryFromSettings());
     }
 
     public static String getSpaDirectory() {
         return spaDirectory.get();
+    }
+
+    private String getDirectoryFromSettings() {
+        String localDirectory = Context.getAdministrationService().getGlobalProperty(GP_LOCAL_DIRECTORY);
+        if (localDirectory == null) {
+            localDirectory = Context.getRuntimeProperties().getProperty(GP_LOCAL_DIRECTORY);
+
+            if (localDirectory == null) {
+                localDirectory = System.getProperty(GP_LOCAL_DIRECTORY);
+
+                if (localDirectory == null) {
+                    localDirectory = DEFAULT_FRONTEND_DIRECTORY;
+                }
+            }
+        }
+
+        return localDirectory;
     }
 
     private static void resolveDirectory(String spaDirectory) {
