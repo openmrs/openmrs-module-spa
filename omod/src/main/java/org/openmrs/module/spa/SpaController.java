@@ -7,6 +7,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.time.Instant;
@@ -105,7 +107,7 @@ public class SpaController {
      * file. Like {@link #getStaticFileWithoutCacheHeaders(String)}, this attempts to force the client to always reload
      * this resource.
      */
-    @RequestMapping({"/**/{filename:.?(?!.*\\.[^.]*$).*$}", "*.html", "*.htm"})
+    @RequestMapping({ "/", "/**/{filename:.?(?!.*\\.[^.]*$).*$}", "*.html", "*.htm"})
     public ResponseEntity<Resource> getSinglePage() {
         Resource resource = resourceLoader.getResource("/index.html");
         if (resource.exists()) {
@@ -117,5 +119,10 @@ public class SpaController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @RequestMapping("")
+    public ResponseEntity<Resource> index(HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).location(URI.create(request.getContextPath() + "/spa/")).build();
     }
 }
