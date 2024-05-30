@@ -26,6 +26,9 @@ import java.util.regex.Pattern;
 @Slf4j
 public class SpaController {
 
+    /**
+     * Since we support both /spa and /ws/spa as the URL, we use this pattern to remove it from the request URI.
+     */
     private static final Pattern URL_PATTERN = Pattern.compile("(?:/ws)?/spa");
 
     private final SpaResourceLoader resourceLoader;
@@ -65,6 +68,9 @@ public class SpaController {
      */
     @RequestMapping(value = "/**/{filename:.*\\.(?!html?)[^.]+$}")
     public ResponseEntity<Resource> getStaticFile(HttpServletRequest request) {
+        // although the filename is there as a path variable, it's really being used as a regex. We also need the
+        // directory relative to the /spa or /ws/spa URL to locate the file, so we extract that from the incoming
+        // request
         String filename = request.getRequestURI();
         filename = filename.substring(request.getContextPath().length());
         filename = URL_PATTERN.matcher(filename).replaceFirst("");
