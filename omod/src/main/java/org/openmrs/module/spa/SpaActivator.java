@@ -10,44 +10,27 @@
 package org.openmrs.module.spa;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openmrs.api.GlobalPropertyListener;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
-import org.openmrs.module.ModuleException;
-import org.openmrs.module.spa.utils.SpaModuleUtils;
-
-import java.io.File;
 
 @Slf4j
 public class SpaActivator extends BaseModuleActivator {
 
+	// here so we can register the listener on load and de-register it when stopped
+	private GlobalPropertyListener spaDirectoryResolver = null;
+
 	@Override
 	public void started() {
-	    createFrontendDirectory();
 		log.info("SPA module started");
+		spaDirectoryResolver = new SpaDirectoryResolver();
+		Context.getAdministrationService().addGlobalPropertyListener(spaDirectoryResolver);
 	}
 
 	@Override
 	public void stopped() {
+		Context.getAdministrationService().removeGlobalPropertyListener(spaDirectoryResolver);
+		spaDirectoryResolver = null;
 		log.info("SPA module stopped");
-	}
-
-	/**
-	 * Creates a directory to hold static files for the frontend if none exists.
-	 * The default directory name is stored in a global property and can be edited.
-	 * By default, the directory is created in the OpenMRS app directory
-	 * If the default value is edited, and a full path provided, the directory is created as per user specification
-	 *
-	 */
-	public void createFrontendDirectory() {
-
-		File folder = SpaModuleUtils.getSpaStaticFilesDir();
-		// now create the modules folder if it doesn't exist
-		if (!folder.exists()) {
-			log.warn("Frontend directory " + folder.getAbsolutePath() + " doesn't exist.  Creating it now.");
-			folder.mkdirs();
-		}
-
-		if (!folder.isDirectory()) {
-			throw new ModuleException("SPA frontend repository is not a directory at: " + folder.getAbsolutePath());
-		}
 	}
 }
