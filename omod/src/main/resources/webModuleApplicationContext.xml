@@ -18,10 +18,6 @@
     <context:annotation-config />
     <bean id="spaResourceLoader" class="org.openmrs.module.spa.SpaResourceLoader" />
     <bean class="org.openmrs.module.spa.SpaController" />
-
-    <mvc:annotation-driven>
-        <mvc:message-converters>
-            <bean class="org.openmrs.module.spa.SpaResourceConverter" />
-        </mvc:message-converters>
-    </mvc:annotation-driven>
+    <bean class="org.openmrs.module.spa.SpaResourceConverter" />
+    <bean class="org.openmrs.module.spa.spring.SpaBeanPostProcessor" />
 </beans>
