@@ -5,6 +5,7 @@ import org.openmrs.GlobalProperty;
 import org.openmrs.api.GlobalPropertyListener;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,7 +47,13 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
     }
 
     private String getDirectoryFromSettings() {
-        String localDirectory = Context.getAdministrationService().getGlobalProperty(GP_LOCAL_DIRECTORY);
+        String localDirectory;
+        try {
+            Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+            localDirectory = Context.getAdministrationService().getGlobalProperty(GP_LOCAL_DIRECTORY);
+        } finally {
+            Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+        }
         if (localDirectory == null) {
             localDirectory = Context.getRuntimeProperties().getProperty(GP_LOCAL_DIRECTORY);
 
