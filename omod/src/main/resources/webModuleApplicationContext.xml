@@ -16,6 +16,7 @@
             http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
     <context:annotation-config />
+    <bean id="org.openmrs.module.spa.SpaActivator" class="org.openmrs.module.spa.SpaActivator" />
     <bean id="spaResourceLoader" class="org.openmrs.module.spa.SpaResourceLoader" />
     <bean class="org.openmrs.module.spa.SpaController" />
     <bean class="org.openmrs.module.spa.SpaResourceConverter" />

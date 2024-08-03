@@ -13,12 +13,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.openmrs.api.GlobalPropertyListener;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.springframework.web.context.ServletContextAware;
+
+import javax.servlet.ServletContext;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.openmrs.module.spa.SpaConstants.BUNDLED_FRONTEND_DIRECTORY;
+import static org.openmrs.module.spa.SpaConstants.GP_LOCAL_DIRECTORY;
 
 @Slf4j
-public class SpaActivator extends BaseModuleActivator {
+public class SpaActivator extends BaseModuleActivator implements ServletContextAware {
 
 	// here so we can register the listener on load and de-register it when stopped
 	private GlobalPropertyListener spaDirectoryResolver = null;
+
+	public static ServletContext servletContext;
 
 	@Override
 	public void started() {
@@ -28,9 +38,24 @@ public class SpaActivator extends BaseModuleActivator {
 	}
 
 	@Override
+	public void contextRefreshed() {
+		if (!Paths.get(SpaDirectoryResolver.getSpaDirectory(), "index.html").toFile().exists()) {
+			Path bundledFrontend = Paths.get(servletContext.getRealPath("/"), "WEB-INF", BUNDLED_FRONTEND_DIRECTORY);
+			if (bundledFrontend.resolve("index.html").toFile().exists()) {
+				Context.getAdministrationService().setGlobalProperty(GP_LOCAL_DIRECTORY, bundledFrontend.toAbsolutePath().toString());
+			}
+		}
+	}
+
+	@Override
 	public void stopped() {
 		Context.getAdministrationService().removeGlobalPropertyListener(spaDirectoryResolver);
 		spaDirectoryResolver = null;
 		log.info("SPA module stopped");
+	}
+
+	@Override
+	public void setServletContext(ServletContext servletContext) {
+		SpaActivator.servletContext = servletContext;
 	}
 }

@@ -84,6 +84,8 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
                 SpaDirectoryResolver.spaDirectory.set(Paths.get(OpenmrsUtil.getApplicationDataDirectory(), DEFAULT_FRONTEND_DIRECTORY).normalize().toAbsolutePath().toString());
             }
             SpaDirectoryResolver.spaDirectory.set(spaDirectoryPath.normalize().toString());
+        } else {
+            SpaDirectoryResolver.spaDirectory.set(spaDirectory);
         }
     }
 }
