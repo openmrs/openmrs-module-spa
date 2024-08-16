@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>spa</artifactId>
-	<version>1.0.10</version>
+	<version>1.0.11-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Single Page Application</name>
 	<description>The SPA module for OpenMRS</description>
@@ -25,7 +25,7 @@
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-spa.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-spa.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-spa.git</url>
-	    <tag>spa-1.0.10</tag>
+	    <tag>HEAD</tag>
   	</scm>
 
 	<modules>
