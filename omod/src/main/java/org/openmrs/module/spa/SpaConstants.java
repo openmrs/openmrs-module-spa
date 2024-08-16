@@ -19,6 +19,8 @@ public final class SpaConstants {
 
 	public static final String DEFAULT_FRONTEND_DIRECTORY = "frontend";
 
+	public static final String BUNDLED_FRONTEND_DIRECTORY = "bundledFrontend";
+
 	public static final String GP_LOCAL_DIRECTORY = "spa.local.directory";
 }
 
