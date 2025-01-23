@@ -5,6 +5,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 public class SpaBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware {
@@ -12,7 +13,7 @@ public class SpaBeanPostProcessor implements BeanPostProcessor, ApplicationConte
     private ApplicationContext applicationContext;
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         if (bean instanceof RequestMappingHandlerAdapter) {
             RequestMappingHandlerAdapter handlerMappingAdapter = (RequestMappingHandlerAdapter) bean;
             handlerMappingAdapter.getMessageConverters().add(0, applicationContext.getBean(SpaResourceConverter.class));
@@ -21,7 +22,7 @@ public class SpaBeanPostProcessor implements BeanPostProcessor, ApplicationConte
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 }
