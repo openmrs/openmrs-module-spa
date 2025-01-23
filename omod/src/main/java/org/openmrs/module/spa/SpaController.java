@@ -83,7 +83,7 @@ public class SpaController {
      * This controller method should handle every other URL. We assume that the correct response is the index.html, i.e.,
      * the single page.
      */
-    @RequestMapping({ "", "/**/{filename:.?(?!.*\\.[^.]*$).*$}", "*.html", "*.htm"})
+    @RequestMapping({ "/", "/**/{filename:.?(?!.*\\.[^.]*$).*$}", "*.html", "*.htm"})
     public ResponseEntity<Resource> getSinglePage() {
         Resource resource = resourceLoader.getResource("/index.html");
         if (resource.exists()) {
