@@ -95,4 +95,9 @@ public class SpaController {
             return ResponseEntity.notFound().cacheControl(CacheControl.noCache().mustRevalidate()).build();
         }
     }
+
+    @RequestMapping("")
+    public ResponseEntity<Resource> index(HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).location(URI.create(request.getContextPath() + "/spa/")).build();
+    }
 }
