@@ -9,6 +9,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +31,10 @@ public class SpaController {
      * Since we support both /spa and /ws/spa as the URL, we use this pattern to remove it from the request URI.
      */
     private static final Pattern URL_PATTERN = Pattern.compile("(?:/ws)?/spa");
+
+    private static final Pattern OPENMRS_CSS_PATTERN = Pattern.compile("openmrs\\.(?:\\w+\\.)?css$");
+
+    private static final MimeType TEXT_JAVASCRIPT = MimeType.valueOf("text/javascript");
 
     private final SpaResourceLoader resourceLoader;
 
@@ -68,6 +73,14 @@ public class SpaController {
                 mediaType = MediaType.parseMediaType(contentType);
             } else {
                 mediaType = MediaType.APPLICATION_OCTET_STREAM;
+            }
+
+            if ((mediaType.includes(TEXT_JAVASCRIPT) && !filename.contains("service-worker")) || OPENMRS_CSS_PATTERN.matcher(filename).matches()) {
+                return ResponseEntity.ok()
+                        .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+                        .headers(headers -> headers.setExpires(Instant.now().plus(365, ChronoUnit.DAYS)))
+                        .contentType(mediaType)
+                        .body(resource);
             }
 
             return ResponseEntity.ok()
