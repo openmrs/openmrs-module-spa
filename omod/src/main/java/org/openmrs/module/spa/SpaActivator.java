@@ -40,7 +40,9 @@ public class SpaActivator extends BaseModuleActivator implements ServletContextA
 	@Override
 	public void contextRefreshed() {
 		String spaDirectory = SpaDirectoryResolver.getSpaDirectory();
-		if (spaDirectory == null) return;
+		if (spaDirectory == null) {
+		    return;
+		}
 		if (!Paths.get(spaDirectory, "index.html").toFile().exists()) {
 			Path bundledFrontend = Paths.get(servletContext.getRealPath("/"), "WEB-INF", BUNDLED_FRONTEND_DIRECTORY);
 			if (bundledFrontend.resolve("index.html").toFile().exists()) {
