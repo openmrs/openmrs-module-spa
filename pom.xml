@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>spa</artifactId>
-	<version>2.1.0-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Single Page Application</name>
 	<description>The SPA module for OpenMRS</description>
@@ -33,7 +33,8 @@
 	</modules>
 	
 	<properties>
-		<openMRSVersion>2.4.1</openMRSVersion>
+		<openMRSVersion>2.7.0</openMRSVersion>
+		<javaCompilerVersion>1.8</javaCompilerVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -86,8 +87,8 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<target>8</target>
-						<source>8</source>
+						<target>${javaCompilerVersion}</target>
+						<source>${javaCompilerVersion}</source>
 						<annotationProcessorPaths>
 							<path>
 								<groupId>org.projectlombok</groupId>
