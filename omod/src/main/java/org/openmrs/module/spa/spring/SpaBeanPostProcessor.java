@@ -1,3 +1,12 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.spa.spring;
 
 import org.openmrs.module.spa.SpaResourceConverter;
@@ -9,20 +18,20 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 public class SpaBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware {
-
-    private ApplicationContext applicationContext;
-
-    @Override
-    public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
-        if (bean instanceof RequestMappingHandlerAdapter) {
-            RequestMappingHandlerAdapter handlerMappingAdapter = (RequestMappingHandlerAdapter) bean;
-            handlerMappingAdapter.getMessageConverters().add(0, applicationContext.getBean(SpaResourceConverter.class));
-        }
-        return bean;
-    }
-
-    @Override
-    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+	
+	private ApplicationContext applicationContext;
+	
+	@Override
+	public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
+		if (bean instanceof RequestMappingHandlerAdapter) {
+			RequestMappingHandlerAdapter handlerMappingAdapter = (RequestMappingHandlerAdapter) bean;
+			handlerMappingAdapter.getMessageConverters().add(0, applicationContext.getBean(SpaResourceConverter.class));
+		}
+		return bean;
+	}
+	
+	@Override
+	public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 }

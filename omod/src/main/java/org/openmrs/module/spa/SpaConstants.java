@@ -9,18 +9,17 @@
  */
 package org.openmrs.module.spa;
 
-
 /**
  * Constants used in SingleSpa Module.
  */
 public final class SpaConstants {
-
-	private SpaConstants() {}
-
+	
+	private SpaConstants() {
+	}
+	
 	public static final String DEFAULT_FRONTEND_DIRECTORY = "frontend";
-
+	
 	public static final String BUNDLED_FRONTEND_DIRECTORY = "bundledFrontend";
-
+	
 	public static final String GP_LOCAL_DIRECTORY = "spa.local.directory";
 }
-

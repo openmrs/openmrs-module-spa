@@ -2,6 +2,7 @@
 omod/target/
 api/target
 api/bin/
+target/
 *.iml
 
 .project
