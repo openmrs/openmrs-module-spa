@@ -16,6 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.lang.NonNull;
 
 import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 /**
  * This is a resource loader for files served by the {@link SpaController}. It is modelled on
@@ -25,6 +26,20 @@ import java.nio.file.Paths;
  */
 public class SpaResourceLoader extends DefaultResourceLoader {
 	
+	private final Supplier<String> spaDirectory;
+	
+	public SpaResourceLoader() {
+		this(SpaDirectoryResolver::getSpaDirectory);
+	}
+	
+	/**
+	 * @param spaDirectory Supplies the directory to load resources from. It is called on every lookup,
+	 *            so it can reflect changes to the configured directory.
+	 */
+	SpaResourceLoader(Supplier<String> spaDirectory) {
+		this.spaDirectory = spaDirectory;
+	}
+	
 	@Override
 	@NonNull
 	protected Resource getResourceByPath(@NonNull String path) {
@@ -32,8 +47,7 @@ public class SpaResourceLoader extends DefaultResourceLoader {
 			path = path.substring(1);
 		}
 		
-		return new FileSystemContextResource(
-		        Paths.get(SpaDirectoryResolver.getSpaDirectory(), path).normalize().toAbsolutePath().toString());
+		return new FileSystemContextResource(Paths.get(spaDirectory.get(), path).normalize().toAbsolutePath().toString());
 	}
 	
 	protected static class FileSystemContextResource extends FileSystemResource implements ContextResource {

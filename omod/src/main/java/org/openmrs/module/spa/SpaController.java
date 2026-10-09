@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,12 @@ public class SpaController {
 	
 	private static final MimeType TEXT_JAVASCRIPT = MimeType.valueOf("text/javascript");
 	
+	/**
+	 * The content encodings we can serve pre-compressed files for, in order of preference, each paired
+	 * with the extension used for files in that encoding.
+	 */
+	private static final String[][] PRECOMPRESSED_ENCODINGS = { { "br", ".br" }, { "gzip", ".gz" } };
+	
 	private final SpaResourceLoader resourceLoader;
 	
 	@Autowired
@@ -64,7 +71,8 @@ public class SpaController {
 		filename = filename.substring(request.getContextPath().length());
 		filename = URL_PATTERN.matcher(filename).replaceFirst("");
 		
-		Resource resource = resourceLoader.getResource("/" + filename);
+		String path = "/" + filename;
+		Resource resource = resourceLoader.getResource(path);
 		if (resource.exists()) {
 			MediaType mediaType;
 			String contentType = request.getServletContext().getMimeType(filename);
@@ -86,13 +94,14 @@ public class SpaController {
 			
 			if ((mediaType.includes(TEXT_JAVASCRIPT) && !filename.contains("service-worker"))
 			        || OPENMRS_CSS_PATTERN.matcher(filename).matches()) {
-				return ResponseEntity.ok().cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+				return serve(ResponseEntity.ok().cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
 				        .headers(headers -> headers.setExpires(Instant.now().plus(365, ChronoUnit.DAYS)))
-				        .contentType(mediaType).body(resource);
+				        .contentType(mediaType),
+				    request, path, resource);
 			}
 			
-			return ResponseEntity.ok().cacheControl(CacheControl.noCache().mustRevalidate()).contentType(mediaType)
-			        .body(resource);
+			return serve(ResponseEntity.ok().cacheControl(CacheControl.noCache().mustRevalidate()).contentType(mediaType),
+			    request, path, resource);
 		} else {
 			return ResponseEntity.notFound().cacheControl(CacheControl.noCache().mustRevalidate()).build();
 		}
@@ -103,14 +112,41 @@ public class SpaController {
 	 * index.html, i.e., the single page.
 	 */
 	@RequestMapping({ "/", "/**/{filename:.?(?!.*\\.[^.]*$).*$}", "*.html", "*.htm" })
-	public ResponseEntity<Resource> getSinglePage() {
+	public ResponseEntity<Resource> getSinglePage(HttpServletRequest request) {
 		Resource resource = resourceLoader.getResource("/index.html");
 		if (resource.exists()) {
-			return ResponseEntity.ok().cacheControl(CacheControl.noCache().mustRevalidate()).contentType(MediaType.TEXT_HTML)
-			        .body(resource);
+			return serve(
+			    ResponseEntity.ok().cacheControl(CacheControl.noCache().mustRevalidate()).contentType(MediaType.TEXT_HTML),
+			    request, "/index.html", resource);
 		} else {
 			return ResponseEntity.notFound().cacheControl(CacheControl.noCache().mustRevalidate()).build();
 		}
+	}
+	
+	/**
+	 * Sends the given resource, but prefers a pre-compressed version of it sitting next to it in the
+	 * SPA directory, e.g. {@code main.js.br} or {@code main.js.gz} for {@code main.js}, when the
+	 * frontend build produced one and the client accepts that encoding.
+	 */
+	private ResponseEntity<Resource> serve(ResponseEntity.BodyBuilder builder, HttpServletRequest request, String path,
+	        Resource resource) {
+		builder.varyBy(HttpHeaders.ACCEPT_ENCODING);
+		
+		String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
+		if (acceptEncoding != null) {
+			for (String[] encoding : PRECOMPRESSED_ENCODINGS) {
+				if (!acceptEncoding.contains(encoding[0])) {
+					continue;
+				}
+				
+				Resource precompressed = resourceLoader.getResource(path + encoding[1]);
+				if (precompressed.exists()) {
+					return builder.header(HttpHeaders.CONTENT_ENCODING, encoding[0]).body(precompressed);
+				}
+			}
+		}
+		
+		return builder.body(resource);
 	}
 	
 	@RequestMapping("")
