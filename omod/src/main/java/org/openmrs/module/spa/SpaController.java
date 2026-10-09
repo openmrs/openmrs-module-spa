@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -51,6 +52,9 @@ public class SpaController {
 	 */
 	private static final String[][] PRECOMPRESSED_ENCODINGS = { { "br", ".br" }, { "gzip", ".gz" } };
 	
+	/** Decodes the request path and strips the context path and any ;jsessionid-style parameters */
+	private static final UrlPathHelper URL_PATH_HELPER = new UrlPathHelper();
+	
 	private final SpaResourceLoader resourceLoader;
 	
 	@Autowired
@@ -67,8 +71,7 @@ public class SpaController {
 		// although the filename is there as a path variable, it's really being used as a regex. We also need the
 		// directory relative to the /spa or /ws/spa URL to locate the file, so we extract that from the incoming
 		// request
-		String filename = request.getRequestURI();
-		filename = filename.substring(request.getContextPath().length());
+		String filename = URL_PATH_HELPER.getPathWithinApplication(request);
 		filename = URL_PATTERN.matcher(filename).replaceFirst("");
 		
 		String path = "/" + filename;

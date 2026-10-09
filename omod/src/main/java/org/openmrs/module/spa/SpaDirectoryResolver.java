@@ -48,7 +48,8 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
 	
 	@Override
 	public void globalPropertyDeleted(String property) {
-		resolveDirectory(getDirectoryFromSettings());
+		// ConfigUtil's cache may not have seen the deletion yet, so don't read it back
+		resolveDirectory(null);
 	}
 	
 	public static String getSpaDirectory() {
@@ -59,7 +60,7 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
 		String localDirectory;
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
-			localDirectory = ConfigUtil.getProperty(GP_LOCAL_DIRECTORY);
+			localDirectory = ConfigUtil.getGlobalProperty(GP_LOCAL_DIRECTORY);
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
@@ -73,14 +74,15 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Resolves the configured directory to a normalized path. A null value resolves to the default
+	 * Resolves the configured directory to a normalized path. A blank value resolves to the default
 	 * frontend directory. Relative paths are resolved against the application data directory and fall
-	 * back to the default if they would escape it.
+	 * back to the default unless they point strictly inside it, so the application data directory
+	 * itself is never served.
 	 */
 	private static Path resolve(String configuredDirectory) {
 		Path appDataDirectory = Paths.get(OpenmrsUtil.getApplicationDataDirectory()).normalize();
 		Path defaultDirectory = appDataDirectory.resolve(DEFAULT_FRONTEND_DIRECTORY);
-		if (configuredDirectory == null) {
+		if (configuredDirectory == null || configuredDirectory.trim().isEmpty()) {
 			return defaultDirectory;
 		}
 		
@@ -90,7 +92,7 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
 		}
 		
 		path = appDataDirectory.resolve(path).normalize();
-		if (!path.startsWith(appDataDirectory)) {
+		if (!path.startsWith(appDataDirectory) || path.equals(appDataDirectory)) {
 			log.error("Path traversal attempt detected in system setting {}: '{}'. Resolving to default.",
 			    GP_LOCAL_DIRECTORY, configuredDirectory);
 			return defaultDirectory;

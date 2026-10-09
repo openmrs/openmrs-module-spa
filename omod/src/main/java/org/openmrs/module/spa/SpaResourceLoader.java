@@ -11,18 +11,20 @@ package org.openmrs.module.spa;
 
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.DescriptiveResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.lang.NonNull;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 /**
  * This is a resource loader for files served by the {@link SpaController}. It is modelled on
  * Spring's {@link FileSystemContextResource}, but uses absolute paths and only checks the SPA
- * directory. Safety checks for where the SPA is served from are handled by the
- * {@link SpaDirectoryResolver} directly.
+ * directory. Paths that would resolve outside the SPA directory yield a resource that does not
+ * exist. Validation of the SPA directory itself is handled by the {@link SpaDirectoryResolver}.
  */
 public class SpaResourceLoader extends DefaultResourceLoader {
 	
@@ -47,7 +49,13 @@ public class SpaResourceLoader extends DefaultResourceLoader {
 			path = path.substring(1);
 		}
 		
-		return new FileSystemContextResource(Paths.get(spaDirectory.get(), path).normalize().toAbsolutePath().toString());
+		Path base = Paths.get(spaDirectory.get()).toAbsolutePath().normalize();
+		Path resolved = Paths.get(base.toString(), path).normalize();
+		if (!resolved.startsWith(base)) {
+			return new DescriptiveResource("path outside the SPA directory");
+		}
+		
+		return new FileSystemContextResource(resolved.toString());
 	}
 	
 	protected static class FileSystemContextResource extends FileSystemResource implements ContextResource {

@@ -13,6 +13,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.nio.file.Path;
@@ -85,6 +87,22 @@ public class SpaDirectoryResolverTest {
 	@Test
 	void shouldFallBackToDefaultWhenNestedRelativePathEscapesApplicationDataDirectory() {
 		SpaDirectoryResolver.resolveDirectory("frontend/../../outside");
+		
+		assertThat(SpaDirectoryResolver.getSpaDirectory(), is(defaultDirectory()));
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings = { "", "   " })
+	void shouldResolveBlankToDefaultDirectory(String configuredDirectory) {
+		SpaDirectoryResolver.resolveDirectory(configuredDirectory);
+		
+		assertThat(SpaDirectoryResolver.getSpaDirectory(), is(defaultDirectory()));
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings = { ".", "frontend/..", "./" })
+	void shouldFallBackToDefaultWhenRelativePathIsApplicationDataDirectory(String configuredDirectory) {
+		SpaDirectoryResolver.resolveDirectory(configuredDirectory);
 		
 		assertThat(SpaDirectoryResolver.getSpaDirectory(), is(defaultDirectory()));
 	}
