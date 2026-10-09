@@ -19,7 +19,6 @@ import org.openmrs.util.PrivilegeConstants;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.openmrs.module.spa.SpaConstants.DEFAULT_FRONTEND_DIRECTORY;
 import static org.openmrs.module.spa.SpaConstants.GP_LOCAL_DIRECTORY;
@@ -31,7 +30,7 @@ import static org.openmrs.module.spa.SpaConstants.GP_LOCAL_DIRECTORY;
 @Slf4j
 public class SpaDirectoryResolver implements GlobalPropertyListener {
 	
-	private static final AtomicReference<String> spaDirectory = new AtomicReference<>();
+	private static volatile String spaDirectory;
 	
 	public SpaDirectoryResolver() {
 		resolveDirectory(getDirectoryFromSettings());
@@ -53,7 +52,7 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
 	}
 	
 	public static String getSpaDirectory() {
-		return spaDirectory.get();
+		return spaDirectory;
 	}
 	
 	private String getDirectoryFromSettings() {
@@ -69,27 +68,33 @@ public class SpaDirectoryResolver implements GlobalPropertyListener {
 		return localDirectory;
 	}
 	
-	private static void resolveDirectory(String spaDirectory) {
-		if (spaDirectory == null) {
-			SpaDirectoryResolver.spaDirectory.compareAndSet(null,
-			    Paths.get(OpenmrsUtil.getApplicationDataDirectory(), DEFAULT_FRONTEND_DIRECTORY).normalize().toString());
-			return;
+	static void resolveDirectory(String configuredDirectory) {
+		spaDirectory = resolve(configuredDirectory).toString();
+	}
+	
+	/**
+	 * Resolves the configured directory to a normalized path. A null value resolves to the default
+	 * frontend directory. Relative paths are resolved against the application data directory and fall
+	 * back to the default if they would escape it.
+	 */
+	private static Path resolve(String configuredDirectory) {
+		Path appDataDirectory = Paths.get(OpenmrsUtil.getApplicationDataDirectory()).normalize();
+		Path defaultDirectory = appDataDirectory.resolve(DEFAULT_FRONTEND_DIRECTORY);
+		if (configuredDirectory == null) {
+			return defaultDirectory;
 		}
 		
-		Path spaDirectoryPath = Paths.get(spaDirectory);
-		if (!spaDirectoryPath.isAbsolute()) {
-			String applicationDataDirectory = OpenmrsUtil.getApplicationDataDirectory();
-			spaDirectoryPath = Paths.get(applicationDataDirectory, spaDirectory);
-			if (!spaDirectoryPath.startsWith(applicationDataDirectory)) {
-				log.error("Path traversal attempt detected in system setting {}: '{}'. Resolving to default.",
-				    GP_LOCAL_DIRECTORY, spaDirectory);
-				SpaDirectoryResolver.spaDirectory
-				        .set(Paths.get(OpenmrsUtil.getApplicationDataDirectory(), DEFAULT_FRONTEND_DIRECTORY).normalize()
-				                .toAbsolutePath().toString());
-			}
-			SpaDirectoryResolver.spaDirectory.set(spaDirectoryPath.normalize().toString());
-		} else {
-			SpaDirectoryResolver.spaDirectory.set(spaDirectory);
+		Path path = Paths.get(configuredDirectory);
+		if (path.isAbsolute()) {
+			return path.normalize();
 		}
+		
+		path = appDataDirectory.resolve(path).normalize();
+		if (!path.startsWith(appDataDirectory)) {
+			log.error("Path traversal attempt detected in system setting {}: '{}'. Resolving to default.",
+			    GP_LOCAL_DIRECTORY, configuredDirectory);
+			return defaultDirectory;
+		}
+		return path;
 	}
 }
